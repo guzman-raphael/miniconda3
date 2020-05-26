@@ -3,10 +3,9 @@ services:
   conda:
     build:
       context: ../..
-      dockerfile: dist/alpine/Dockerfile
+      dockerfile: dist/debian/Dockerfile
       args:
         - CONDA_VERSION
-        - CONDA_MD5
         - PY_LABEL
-    image: raphaelguzman/miniconda3:${CONDA_VERSION}-py${PY_VERSION}-alpine3.11
+    image: raphaelguzman/miniconda3:${CONDA_VERSION}-py${PY_VERSION}-debian
     command: tail -f /dev/null
