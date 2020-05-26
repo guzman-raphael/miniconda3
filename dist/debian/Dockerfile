@@ -19,6 +19,7 @@ RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${PY_LABEL}${CON
     echo "conda activate base" >> ~/.bashrc && \
     find /opt/conda/ -follow -type f -name '*.a' -delete && \
     find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
-    /opt/conda/bin/conda clean -afy
+    # /opt/conda/bin/conda clean -afy
+    /opt/conda/bin/conda clean -ay
 
 CMD [ "/bin/bash" ]
