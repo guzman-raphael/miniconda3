@@ -1,0 +1,50 @@
+branches:
+  only:
+  - master
+services: 
+- docker
+alpine: &alpine
+      stage: Build
+      os: linux
+      language: shell
+      script:
+        - docker build --build-arg CONDA_VERSION=$CONDA_VERSION --build-arg CONDA_MD5=$CONDA_MD5 --build-arg PY_LABEL=$PY_LABEL -t raphaelguzman/miniconda3:${CONDA_VERSION}-py${PY_VERSION}-alpine3.11 -f ./dist/alpine/Dockerfile .
+        - docker rmi alpine:3.11
+      after_success:
+        - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+        - docker images
+        - |
+          for i in `docker images --format {{.Repository}}:{{.Tag}}`; do
+            if [[ $TRAVIS_EVENT_TYPE == "push" ]]; then 
+              docker push $i;
+            fi
+          done
+# debian: &debian
+#       stage: Build
+#       os: linux
+#       language: shell
+#       script:
+#         - docker build --build-arg CONDA_VERSION=$CONDA_VERSION --build-arg CONDA_MD5=$CONDA_MD5 --build-arg PY_LABEL=$PY_LABEL -t raphaelguzman/miniconda3:${CONDA_VERSION}-py${PY_VERSION}-debian -f ./dist/debian/Dockerfile .
+jobs:
+  include:
+    - <<: *alpine
+      env:
+      - CONDA_VERSION: 4.8.2
+      - PY_VERSION: 38
+      - PY_LABEL: py38_
+      - CONDA_MD5: cbda751e713b5a95f187ae70b509403f
+    - <<: *alpine
+      env:
+      - CONDA_VERSION: 4.8.2
+      - PY_VERSION: 37
+      - PY_LABEL: py37_
+      - CONDA_MD5: 87e77f097f6ebb5127c77662dfc3165e
+    - <<: *alpine
+      env:
+      - CONDA_VERSION: 4.4.10
+      - PY_VERSION: 36
+      - CONDA_MD5: bec6203dbb2f53011e974e9bf4d46e93
+    # - <<: *debian
+    #   env:
+    #   - PY_VER: 3
+    #   - UBUNTU_VER: 16.04
