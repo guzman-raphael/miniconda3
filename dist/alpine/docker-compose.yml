@@ -1,0 +1,11 @@
+version: '2.4'
+services:
+  conda:
+    build:
+      context: .
+      args:
+        CONDA_VERSION: $CONDA_VERSION
+        CONDA_MD5: $CONDA_MD5
+        PY_LABEL: $PY_LABEL
+    image: raphaelguzman/miniconda3:${CONDA_VERSION}-py${PY_VERSION}-alpine3.11
+    command: tail -f /dev/null
