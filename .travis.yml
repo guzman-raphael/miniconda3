@@ -33,35 +33,41 @@ jobs:
   include:
     - <<: *alpine
       env:
-      - CONDA_VERSION: 4.8.2
+      - LABEL: Alpine
       - PY_VERSION: 3.8
+      - CONDA_VERSION: 4.8.2
       - PY_LABEL: py38_
       - CONDA_MD5: cbda751e713b5a95f187ae70b509403f
     - <<: *alpine
       env:
-      - CONDA_VERSION: 4.8.2
+      - LABEL: Alpine
       - PY_VERSION: 3.7
+      - CONDA_VERSION: 4.8.2
       - PY_LABEL: py37_
       - CONDA_MD5: 87e77f097f6ebb5127c77662dfc3165e
     - <<: *alpine
       env:
-      - CONDA_VERSION: 4.4.10
+      - LABEL: Alpine
       - PY_VERSION: 3.6
+      - CONDA_VERSION: 4.4.10
       - CONDA_MD5: bec6203dbb2f53011e974e9bf4d46e93
     - <<: *debian
       env:
-      - CONDA_VERSION: 4.8.2
+      - LABEL: Debian
       - PY_VERSION: 3.8
+      - CONDA_VERSION: 4.8.2
       - PY_LABEL: py38_
       - CONDA_MD5: cbda751e713b5a95f187ae70b509403f
     - <<: *debian
       env:
-      - CONDA_VERSION: 4.8.2
+      - LABEL: Debian
       - PY_VERSION: 3.7
+      - CONDA_VERSION: 4.8.2
       - PY_LABEL: py37_
       - CONDA_MD5: 87e77f097f6ebb5127c77662dfc3165e
     - <<: *debian
       env:
-      - CONDA_VERSION: 4.4.10
+      - LABEL: Debian
       - PY_VERSION: 3.6
+      - CONDA_VERSION: 4.4.10
       - CONDA_MD5: bec6203dbb2f53011e974e9bf4d46e93
