@@ -51,8 +51,8 @@ ARG CONDA_MD5
 ARG PY_LABEL
 
 # Create non-root user, install dependencies, install Conda
-RUN addgroup -S anaconda && \
-    adduser -D -u 10151 anaconda -G anaconda && \
+RUN umask u+rwx,g+rwx && \
+    addgroup -S anaconda && \
     wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${PY_LABEL}${CONDA_VERSION}-Linux-x86_64.sh && \
     # wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${PY_LABEL}${CONDA_VERSION}-Linux-x86_64.sh && \
     echo "${CONDA_MD5}  Miniconda3-${PY_LABEL}${CONDA_VERSION}-Linux-x86_64.sh" > miniconda.md5 && \
@@ -62,16 +62,15 @@ RUN addgroup -S anaconda && \
     sh ./miniconda.sh -b -p /opt/conda && \
     rm miniconda.sh miniconda.md5 && \
     ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    chown -R anaconda:anaconda /opt && \
-    echo ". /opt/conda/etc/profile.d/conda.sh" >> /home/anaconda/.profile && \
-    echo "conda activate base" >> /home/anaconda/.profile && \
+    chown -R root:anaconda /opt && \
+    echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.profile && \
+    echo "conda activate base" >> ~/.profile && \
     find /opt/conda/ -follow -type f -name '*.a' -delete && \
     find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
     # /opt/conda/bin/conda clean -afy
     opt/conda/bin/conda clean -ay
 
 
-USER  10151
 ENV PATH "/bin:/sbin:/usr/bin"
 
 CMD [ "sh", "--login", "-i" ]
