@@ -51,7 +51,7 @@ ARG CONDA_MD5
 ARG PY_LABEL
 
 # Create non-root user, install dependencies, install Conda
-RUN umask u+rwx,g+rwx && \
+RUN umask u+rwx,g+rwx,o-rwx && \
     addgroup -S anaconda && \
     wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${PY_LABEL}${CONDA_VERSION}-Linux-x86_64.sh && \
     # wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${PY_LABEL}${CONDA_VERSION}-Linux-x86_64.sh && \

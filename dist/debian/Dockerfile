@@ -7,7 +7,7 @@ ARG CONDA_VERSION
 ARG PY_LABEL
 
 RUN \
-    umask u+rwx,g+rwx && \
+    umask u+rwx,g+rwx,o-rwx && \
     groupadd -r anaconda && \
     apt-get update --fix-missing && \
     apt-get install -y wget bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion && \
