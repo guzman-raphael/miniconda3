@@ -68,7 +68,8 @@ RUN umask u+rwx,g+rwx,o-rwx && \
     find /opt/conda/ -follow -type f -name '*.a' -delete && \
     find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
     # /opt/conda/bin/conda clean -afy
-    opt/conda/bin/conda clean -ay
+    opt/conda/bin/conda clean -ay && \
+    chmod -R u+rwx,g+rwx,o-rwx /opt/conda/conda-meta
 
 
 ENV PATH "/bin:/sbin:/usr/bin"
