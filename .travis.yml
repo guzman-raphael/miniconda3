@@ -27,17 +27,9 @@ alpine: &alpine
       os: linux
       language: shell
       script:
-        - echo "${COMPOSE_FILE}"
-        - docker-compose -f $COMPOSE_FILE images app
-        - |
-          export IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
-          	| awk '{print $2}')
-        - |
-          export TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
-          	| awk '{print $3}')
-        - echo "${IMAGE}"
-        - echo "${TAG}"
         - docker-compose -f $COMPOSE_FILE build
+        - IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $2}')
+        - TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $3}')
         - docker tag ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${TRAVIS_COMMIT:0:7}
         - docker rmi alpine:3.11
         - docker system prune -f
@@ -47,13 +39,9 @@ debian: &debian
       os: linux
       language: shell
       script:
-        - |
-          export IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
-          	| awk '{print $2}')
-        - |
-          export TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
-          	| awk '{print $3}')
         - docker-compose -f $COMPOSE_FILE build
+        - IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $2}')
+        - TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $3}')
         - docker tag ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${TRAVIS_COMMIT:0:7}
         - |
           [ "$PY_VER" == "3.8" ] && docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
