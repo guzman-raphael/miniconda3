@@ -7,10 +7,9 @@ push: &push
       before_install:
         - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         - |
-          echo $(echo "deb [arch=amd64] \
+          sudo add-apt-repository $(echo "deb [arch=amd64] \
           	https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
           	| tr -d '\t')
-        - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
         - sudo apt-get update
         - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
         - docker version
@@ -28,12 +27,15 @@ alpine: &alpine
       os: linux
       language: shell
       script:
+        - echo "${COMPOSE_FILE}"
         - |
           export IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
           	| awk '{print $2}')
         - |
           export TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
           	| awk '{print $3}')
+        - echo "${IMAGE}"
+        - echo "${TAG}"
         - docker-compose -f $COMPOSE_FILE build
         - docker tag ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${TRAVIS_COMMIT:0:7}
         - docker rmi alpine:3.11
