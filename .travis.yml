@@ -18,17 +18,18 @@ push: &push
         - docker images
         - |
           for i in `docker images --format {{.Repository}}:{{.Tag}}`; do
-            if [[ $TRAVIS_EVENT_TYPE == "push" ]]; then 
-              docker push $i;
-            fi
+          	if [[ $TRAVIS_EVENT_TYPE == "push" ]]; then 
+          		docker push $i;
+          	fi
           done
 alpine: &alpine
       stage: Build
       os: linux
       language: shell
       script:
+        - echo "${COMPOSE_FILE}"
         - docker-compose -f $COMPOSE_FILE build
-        - docker-compose -f $COMPOSE_FILE images app
+        - docker-compose -f $COMPOSE_FILE images
         - export IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $2}')
         - export TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $3}')
         - echo "${IMAGE}"
