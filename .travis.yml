@@ -6,7 +6,9 @@ services:
 push: &push
       before_install:
         - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-        - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        - |
+          sudo add-apt-repository "deb [arch=amd64] "\
+            "https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
         - sudo apt-get update
         - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
         - docker version
@@ -40,7 +42,8 @@ debian: &debian
         - TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $3}')
         - docker-compose -f $COMPOSE_FILE build
         - docker tag ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${TRAVIS_COMMIT:0:7}
-        - [ "$PY_VER" == "3.8" ] && docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
+        - |
+          [ "$PY_VER" == "3.8" ] && docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
         - docker rmi debian:9.12-slim
         - docker system prune -f
       <<: *push
