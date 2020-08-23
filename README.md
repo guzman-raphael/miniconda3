@@ -1,3 +1,7 @@
+# Miniconda3
+
+A minimal base docker image with conda.
+
 # Launch locally
 
 
