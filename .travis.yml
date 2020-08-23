@@ -45,7 +45,7 @@ debian: &debian
         - TAG=$(docker images | tail -1 | awk '{print $2}')
         - docker tag ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${TRAVIS_COMMIT:0:7}
         - |
-          [ "$PY_VER" == "3.8" ] && docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
+          [ "$PY_VER" == "3.8" ] && docker tag ${IMAGE}:${TAG} ${IMAGE}:latest || echo
         - docker system prune -f
       <<: *push
 jobs:
