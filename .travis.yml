@@ -28,7 +28,7 @@ alpine: &alpine
       language: shell
       script:
         - echo "${COMPOSE_FILE}"
-				- docker-compose -f $COMPOSE_FILE images app
+        - docker-compose -f $COMPOSE_FILE images app
         - |
           export IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
           	| awk '{print $2}')
