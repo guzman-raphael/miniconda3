@@ -8,8 +8,8 @@ push: &push
         - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         - |
           sudo add-apt-repository "$(echo "deb [arch=amd64] \
-            https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-            | sed -r 's|  ||g')"
+          	https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+          	| tr -d '\t')"
         - sudo apt-get update
         - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
         - docker version
@@ -28,6 +28,7 @@ alpine: &alpine
       language: shell
       script:
         - echo "${COMPOSE_FILE}"
+				- docker-compose -f $COMPOSE_FILE images app
         - |
           export IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
           	| awk '{print $2}')
