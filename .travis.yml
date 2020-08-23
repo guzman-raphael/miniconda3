@@ -8,8 +8,8 @@ push: &push
         - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
         - |
           sudo add-apt-repository $(echo "deb [arch=amd64] \
-          	https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
-          	| tr -d '\t')
+            https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" \
+            | sed -r 's|  ||g')
         - sudo apt-get update
         - sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
         - docker version
