@@ -1,11 +1,11 @@
 version: '2.4'
 services:
-  conda:
+  app:
     build:
       context: ../..
       dockerfile: dist/debian/Dockerfile
       args:
         - CONDA_VERSION
         - PY_LABEL
-    image: raphaelguzman/miniconda3:${CONDA_VERSION}-py${PY_VERSION}-debian
+    image: datajoint/miniconda3:${CONDA_VERSION}-py${PY_VERSION}-debian
     command: tail -f /dev/null
