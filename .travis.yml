@@ -40,12 +40,12 @@ debian: &debian
       language: shell
       script:
         - docker-compose -f $COMPOSE_FILE build
-        - IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $2}')
-        - TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $3}')
+        - docker rmi debian:9.12-slim
+        - IMAGE=$(docker images | tail -1 | awk '{print $2}')
+        - TAG=$(docker images | tail -1 | awk '{print $3}')
         - docker tag ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${TRAVIS_COMMIT:0:7}
         - |
           [ "$PY_VER" == "3.8" ] && docker tag ${IMAGE}:${TAG} ${IMAGE}:latest
-        - docker rmi debian:9.12-slim
         - docker system prune -f
       <<: *push
 jobs:
