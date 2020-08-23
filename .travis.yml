@@ -28,8 +28,12 @@ alpine: &alpine
       os: linux
       language: shell
       script:
-        - IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $2}')
-        - TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $3}')
+        - |
+          export IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
+          	| awk '{print $2}')
+        - |
+          export TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
+          	| awk '{print $3}')
         - docker-compose -f $COMPOSE_FILE build
         - docker tag ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${TRAVIS_COMMIT:0:7}
         - docker rmi alpine:3.11
@@ -40,8 +44,12 @@ debian: &debian
       os: linux
       language: shell
       script:
-        - IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $2}')
-        - TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 | awk '{print $3}')
+        - |
+          export IMAGE=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
+          	| awk '{print $2}')
+        - |
+          export TAG=$(docker-compose -f $COMPOSE_FILE images app | tail -1 \
+          	| awk '{print $3}')
         - docker-compose -f $COMPOSE_FILE build
         - docker tag ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${TRAVIS_COMMIT:0:7}
         - |
