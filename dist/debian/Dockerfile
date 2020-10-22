@@ -27,3 +27,4 @@ RUN \
     chmod -R u+rwx,g+rwx,o-rwx /opt/conda/conda-meta
 
 CMD [ "/bin/bash" ]
+USER root:anaconda

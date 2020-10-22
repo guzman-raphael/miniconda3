@@ -75,3 +75,4 @@ RUN umask u+rwx,g+rwx,o-rwx && \
 ENV PATH "/bin:/sbin:/usr/bin"
 
 CMD [ "sh", "--login", "-i" ]
+USER root:anaconda
