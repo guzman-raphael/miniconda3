@@ -62,8 +62,8 @@ jobs:
       - name: Archive image
         uses: actions/upload-artifact@v2
         with:
-          name: format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)
-          path: format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro)
+          name: ${{ format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro) }}
+          path: ${{ format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro) }}
           retention-days: 5
   test:
     runs-on: ubuntu-latest
