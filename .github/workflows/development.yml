@@ -108,9 +108,9 @@ jobs:
         run: |
           docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
           REF=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}:{{.Tag}}")
-          docker run --rm "$REF" sh -lc "conda -V" 2>&1 | grep "$CONDA_VER"
-          docker run --rm "$REF" sh -lc "python --version" 2>&1 | grep "$PY_VER"
-          docker run --rm "$REF" sh -lc "cat /etc/issue" 2>&1 | grep -i "$DISTRO"
+          docker run --rm "$REF" sh -lc "conda -V 2>&1" | grep "$CONDA_VER"
+          docker run --rm "$REF" sh -lc "python --version 2>&1" | grep "$PY_VER"
+          docker run --rm "$REF" sh -lc "cat /etc/issue 2>&1" | grep -i "$DISTRO"
 
 
   # deploy:
