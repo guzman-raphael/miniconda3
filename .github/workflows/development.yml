@@ -43,17 +43,17 @@ jobs:
           - distro: debian
             py_ver: 3.6
             conda_ver: 4.5.4
+    env:
+      DISTRO: ${{ matrix.distro }}
+      PY_VER: ${{ matrix.py_ver }}
+      CONDA_VER: ${{ matrix.conda_ver }}
+      PY_LABEL: ${{ matrix.py_label }}
+      CONDA_MD5: ${{ matrix.conda_md5 }}
+      DOCKER_CLIENT_TIMEOUT: "120"
+      COMPOSE_HTTP_TIMEOUT: "120"
     steps:
       - uses: actions/checkout@v2
       - name: Compile image
-        env:
-          DISTRO: ${{ matrix.distro }}
-          PY_VER: ${{ matrix.py_ver }}
-          CONDA_VER: ${{ matrix.conda_ver }}
-          PY_LABEL: ${{ matrix.py_label }}
-          CONDA_MD5: ${{ matrix.conda_md5 }}
-          DOCKER_CLIENT_TIMEOUT: "120"
-          COMPOSE_HTTP_TIMEOUT: "120"
         run: |
           docker-compose -f dist/${DISTRO}/docker-compose.yml build
           IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
@@ -67,6 +67,7 @@ jobs:
           retention-days: 5
   test:
     runs-on: ubuntu-latest
+    needs: build
     steps:
       - run: env
 
