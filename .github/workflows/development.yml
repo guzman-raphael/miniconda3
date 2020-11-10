@@ -1,0 +1,102 @@
+name: Development
+on:
+  push:
+    branches: [master]
+  pull_request: null
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - distro: alpine
+            py_ver: 3.9
+            conda_ver: 4.9.0
+            py_label: py38_
+            conda_md5: d63adf39f2c220950a063e0529d4ff74
+          - distro: alpine
+            py_ver: 3.8
+            conda_ver: 4.8.3
+            py_label: py38_
+            conda_md5: d63adf39f2c220950a063e0529d4ff74
+          - distro: alpine
+            py_ver: 3.7
+            conda_ver: 4.8.3
+            py_label: py37_
+            conda_md5: 751786b92c00b1aeae3f017b781018df
+          - distro: alpine
+            py_ver: 3.6
+            conda_ver: 4.5.4
+            conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
+          - distro: debian
+            py_ver: 3.9
+            conda_ver: 4.9.0
+            py_label: py38_
+          - distro: debian
+            py_ver: 3.8
+            conda_ver: 4.8.3
+            py_label: py38_
+          - distro: debian
+            py_ver: 3.7
+            conda_ver: 4.8.3
+            py_label: py37_
+          - distro: debian
+            py_ver: 3.6
+            conda_ver: 4.5.4
+    steps:
+      - uses: actions/checkout@v2
+      - name: Compile image
+        env:
+          DISTRO: ${{ matrix.distro }}
+          PY_VER: ${{ matrix.py_ver }}
+          CONDA_VER: ${{ matrix.conda_ver }}
+          PY_LABEL: ${{ matrix.py_label }}
+          CONDA_MD5: ${{ matrix.conda_md5 }}
+          DOCKER_CLIENT_TIMEOUT: "120"
+          COMPOSE_HTTP_TIMEOUT: "120"
+        run: |
+          docker-compose -f dist/${DISTRO}/docker-compose.yml build
+          IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
+          TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
+          docker save "${IMAGE}:${TAG}" | gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
+      - name: Archive image
+        uses: actions/upload-artifact@v2
+        with:
+          name: format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)
+          path: format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro)
+          retention-days: 5
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: env
+
+  # deploy:
+
+
+  # CI:
+  #   if: github.event_name == 'push' || github.event_name == 'pull_request'
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       matlab_version: ["R2019a"]
+  #       mysql_version: ["8.0.18", "5.7", "5.6"]
+  #       include:
+  #         - matlab_version: "R2018b"
+  #           mysql_version: "5.7"
+  #         - matlab_version: "R2016b"
+  #           mysql_version: "5.7"
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Run primary tests
+  #       env:
+  #         MATLAB_UID: "1001"
+  #         MATLAB_GID: "116"
+  #         MATLAB_USER: ${{ secrets.matlab_user }}
+  #         MATLAB_HOSTID: ${{ secrets.matlab_hostid }}
+  #         MATLAB_VERSION: ${{ matrix.matlab_version }}
+  #         MYSQL_TAG: ${{ matrix.mysql_version }}
+  #         MATLAB_LICENSE: ${{ secrets[format('matlab_license_{0}', matrix.matlab_version)] }}
+  #         DOCKER_CLIENT_TIMEOUT: "120"
+  #         COMPOSE_HTTP_TIMEOUT: "120"
+  #       run: |
+  #         docker-compose -f LNX-docker-compose.yml up --build --exit-code-from app
