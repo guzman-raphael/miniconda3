@@ -33,9 +33,3 @@ Conda repos
 - https://repo.continuum.io/miniconda/
 
 Compatible conda releases: Miniconda3-%-Linux-x86_64.sh
-
-
-# scratch
-
-docker save datajoint/miniconda3:4.8.3-py3.8-alpine3.11 | gzip > 4_8_3.tar.gz
-docker load < 4_8_3.tar.gz

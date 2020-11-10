@@ -3,54 +3,54 @@ on:
   push:
     branches: [master]
   pull_request: null
-strategy:
-  matrix:
-    include:
-      - conda_ver: 4.9.0
-        py_ver: 3.9
-        distro: alpine
-        py_label: py38_
-        conda_md5: d63adf39f2c220950a063e0529d4ff74
-      - conda_ver: 4.8.3
-        py_ver: 3.8
-        distro: alpine
-        py_label: py38_
-        conda_md5: d63adf39f2c220950a063e0529d4ff74
-      - conda_ver: 4.8.3
-        py_ver: 3.7
-        distro: alpine
-        py_label: py37_
-        conda_md5: 751786b92c00b1aeae3f017b781018df
-      - conda_ver: 4.5.4
-        py_ver: 3.6
-        distro: alpine
-        conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
-      - conda_ver: 4.9.0
-        py_ver: 3.9
-        distro: debian
-        py_label: py38_
-      - conda_ver: 4.8.3
-        py_ver: 3.8
-        distro: debian
-        py_label: py38_
-      - conda_ver: 4.8.3
-        py_ver: 3.7
-        distro: debian
-        py_label: py37_
-      - conda_ver: 4.5.4
-        py_ver: 3.6
-        distro: debian
-env:
-  CONDA_VER: ${{ matrix.conda_ver }}
-  PY_VER: ${{ matrix.py_ver }}
-  DISTRO: ${{ matrix.distro }}
-  PY_LABEL: ${{ matrix.py_label }}
-  CONDA_MD5: ${{ matrix.conda_md5 }}
-  DOCKER_CLIENT_TIMEOUT: "120"
-  COMPOSE_HTTP_TIMEOUT: "120"
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: alpine
+            py_label: py38_
+            conda_md5: d63adf39f2c220950a063e0529d4ff74
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: alpine
+            py_label: py38_
+            conda_md5: d63adf39f2c220950a063e0529d4ff74
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: alpine
+            py_label: py37_
+            conda_md5: 751786b92c00b1aeae3f017b781018df
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: alpine
+            conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: debian
+            py_label: py38_
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: debian
+            py_label: py38_
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: debian
+            py_label: py37_
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: debian
+    env:
+      CONDA_VER: ${{ matrix.conda_ver }}
+      PY_VER: ${{ matrix.py_ver }}
+      DISTRO: ${{ matrix.distro }}
+      PY_LABEL: ${{ matrix.py_label }}
+      CONDA_MD5: ${{ matrix.conda_md5 }}
+      DOCKER_CLIENT_TIMEOUT: "120"
+      COMPOSE_HTTP_TIMEOUT: "120"
     steps:
       - uses: actions/checkout@v2
       - name: Compile image
@@ -59,17 +59,59 @@ jobs:
           IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
           TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
           docker save "${IMAGE}:${TAG}" | gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
-      - name: Archive image
+      - name: Add image artifact
         uses: actions/upload-artifact@v2
         with:
           name: ${{ format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro) }}
           path: ${{ format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro) }}
           retention-days: 5
   test:
-    runs-on: ubuntu-latest
     needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: alpine
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: alpine
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: alpine
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: alpine
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: debian
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: debian
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: debian
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: debian
+    env:
+      CONDA_VER: ${{ matrix.conda_ver }}
+      PY_VER: ${{ matrix.py_ver }}
+      DISTRO: ${{ matrix.distro }}
     steps:
-      - run: env
+      - name: Fetch image artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro) }}
+      - name: Verify build
+        run: |
+          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
+          REF=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}:{{.Tag}}")
+          docker run --rm "$REF" sh -lc "conda -V" | grep "$CONDA_VER"
+          docker run --rm "$REF" sh -lc "python --version" | grep "3.7"
+          docker run --rm "$REF" sh -lc "cat /etc/issue" | grep -i "$DISTRO"
+
 
   # deploy:
 
