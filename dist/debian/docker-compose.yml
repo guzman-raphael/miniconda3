@@ -5,7 +5,8 @@ services:
       context: ../..
       dockerfile: dist/debian/Dockerfile
       args:
-        - CONDA_VERSION
+        - CONDA_VER
         - PY_LABEL
-    image: datajoint/miniconda3:${CONDA_VERSION}-py${PY_VERSION}-debian
+        - PY_VER
+    image: datajoint/miniconda3:${CONDA_VER}-py${PY_VER}-debian
     command: tail -f /dev/null

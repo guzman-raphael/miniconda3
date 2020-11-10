@@ -45,7 +45,7 @@ debian: &debian
         - TAG=$(docker images | tail -1 | awk '{print $2}')
         - docker tag ${IMAGE}:${TAG} ${IMAGE}:${TAG}-${TRAVIS_COMMIT:0:7}
         - |
-          [ "$PY_VERSION" == "3.8" ] && docker tag ${IMAGE}:${TAG} ${IMAGE}:latest || echo
+          [ "$PY_VER" == "3.8" ] && docker tag ${IMAGE}:${TAG} ${IMAGE}:latest || echo
         - docker system prune -f
       <<: *push
 jobs:
@@ -53,46 +53,58 @@ jobs:
     - <<: *alpine
       env:
       - LABEL: alpine
-      - PY_VERSION: 3.8
-      - CONDA_VERSION: 4.8.2
+      - PY_VER: 3.9
+      - CONDA_VER: 4.9.0
       - PY_LABEL: py38_
-      - CONDA_MD5: cbda751e713b5a95f187ae70b509403f
+      - CONDA_MD5: d63adf39f2c220950a063e0529d4ff74
       - COMPOSE_FILE: dist/alpine/docker-compose.yml
     - <<: *alpine
       env:
       - LABEL: alpine
-      - PY_VERSION: 3.7
-      - CONDA_VERSION: 4.8.2
-      - PY_LABEL: py37_
-      - CONDA_MD5: 87e77f097f6ebb5127c77662dfc3165e
+      - PY_VER: 3.8
+      - CONDA_VER: 4.8.3
+      - PY_LABEL: py38_
+      - CONDA_MD5: d63adf39f2c220950a063e0529d4ff74
       - COMPOSE_FILE: dist/alpine/docker-compose.yml
     - <<: *alpine
       env:
       - LABEL: alpine
-      - PY_VERSION: 3.6
-      - CONDA_VERSION: 4.4.10
-      - CONDA_MD5: bec6203dbb2f53011e974e9bf4d46e93
+      - PY_VER: 3.7
+      - CONDA_VER: 4.8.3
+      - PY_LABEL: py37_
+      - CONDA_MD5: 751786b92c00b1aeae3f017b781018df
+      - COMPOSE_FILE: dist/alpine/docker-compose.yml
+    - <<: *alpine
+      env:
+      - LABEL: alpine
+      - PY_VER: 3.6
+      - CONDA_VER: 4.5.4
+      - CONDA_MD5: a946ea1d0c4a642ddf0c3a26a18bb16d
       - COMPOSE_FILE: dist/alpine/docker-compose.yml
     - <<: *debian
       env:
       - LABEL: debian
-      - PY_VERSION: 3.8
-      - CONDA_VERSION: 4.8.2
+      - PY_VER: 3.9
+      - CONDA_VER: 4.9.0
       - PY_LABEL: py38_
-      - CONDA_MD5: cbda751e713b5a95f187ae70b509403f
       - COMPOSE_FILE: dist/debian/docker-compose.yml
     - <<: *debian
       env:
       - LABEL: debian
-      - PY_VERSION: 3.7
-      - CONDA_VERSION: 4.8.2
+      - PY_VER: 3.8
+      - CONDA_VER: 4.8.3
+      - PY_LABEL: py38_
+      - COMPOSE_FILE: dist/debian/docker-compose.yml
+    - <<: *debian
+      env:
+      - LABEL: debian
+      - PY_VER: 3.7
+      - CONDA_VER: 4.8.3
       - PY_LABEL: py37_
-      - CONDA_MD5: 87e77f097f6ebb5127c77662dfc3165e
       - COMPOSE_FILE: dist/debian/docker-compose.yml
     - <<: *debian
       env:
       - LABEL: debian
-      - PY_VERSION: 3.6
-      - CONDA_VERSION: 4.4.10
-      - CONDA_MD5: bec6203dbb2f53011e974e9bf4d46e93
+      - PY_VER: 3.6
+      - CONDA_VER: 4.4.10
       - COMPOSE_FILE: dist/debian/docker-compose.yml

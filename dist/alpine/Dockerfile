@@ -46,18 +46,22 @@ RUN ALPINE_GLIBC_BASE_URL="https://github.com/sgerrand/alpine-pkg-glibc/releases
 FROM alpine-glibc
 
 LABEL MAINTAINER="Raphael Guzman"
-ARG CONDA_VERSION
+ARG CONDA_VER
 ARG CONDA_MD5
 ARG PY_LABEL
-
+ARG PY_VER
 # Create non-root user, install dependencies, install Conda
-RUN umask u+rwx,g+rwx,o-rwx && \
+RUN \
+    umask u+rwx,g+rwx,o-rwx && \
+    [ "${PY_VER}" != "3.9" ] || CONDA_VER_UPDATE=$CONDA_VER && \
+    # Current latest Miniconda3 release
+    [ "${PY_VER}" != "3.9" ] || CONDA_VER=4.8.3 && \
     addgroup -S anaconda && \
-    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${PY_LABEL}${CONDA_VERSION}-Linux-x86_64.sh && \
-    # wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${PY_LABEL}${CONDA_VERSION}-Linux-x86_64.sh && \
-    echo "${CONDA_MD5}  Miniconda3-${PY_LABEL}${CONDA_VERSION}-Linux-x86_64.sh" > miniconda.md5 && \
+    wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-x86_64.sh && \
+    # wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-x86_64.sh && \
+    echo "${CONDA_MD5}  Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-x86_64.sh" > miniconda.md5 && \
     if [ $(md5sum -c miniconda.md5 | awk '{print $2}') != "OK" ] ; then exit 1; fi && \
-    mv Miniconda3-${PY_LABEL}${CONDA_VERSION}-Linux-x86_64.sh miniconda.sh && \
+    mv Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-x86_64.sh miniconda.sh && \
     mkdir -p /opt && \
     sh ./miniconda.sh -b -p /opt/conda && \
     rm miniconda.sh miniconda.md5 && \
@@ -65,6 +69,11 @@ RUN umask u+rwx,g+rwx,o-rwx && \
     chown -R root:anaconda /opt && \
     echo ". /opt/conda/etc/profile.d/conda.sh" >> ~/.profile && \
     echo "conda activate base" >> ~/.profile && \
+    . /opt/conda/etc/profile.d/conda.sh && \
+    conda activate base && \
+    conda config --add channels conda-forge && \
+    conda config --set auto_update_conda False && \
+    [ "${PY_VER}" != "3.9" ] || conda install -yc conda-forge conda=${CONDA_VER_UPDATE} python=${PY_VER} && \
     find /opt/conda/ -follow -type f -name '*.a' -delete && \
     find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
     # /opt/conda/bin/conda clean -afy
