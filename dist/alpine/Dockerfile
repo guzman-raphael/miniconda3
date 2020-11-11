@@ -93,5 +93,5 @@ RUN \
 
 ENV PATH "/bin:/sbin:/usr/bin"
 
-CMD [ "sh", "--login", "-i" ]
+CMD [ "sh", "--login" ]
 USER root:anaconda
