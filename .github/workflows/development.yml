@@ -4,169 +4,183 @@ on:
     branches: [master]
   pull_request: null
 jobs:
-  build:
+  # build:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       include:
+  #         - conda_ver: 4.9.0
+  #           py_ver: 3.9
+  #           distro: alpine
+  #           py_label: py38_
+  #           conda_md5: d63adf39f2c220950a063e0529d4ff74
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.8
+  #           distro: alpine
+  #           py_label: py38_
+  #           conda_md5: d63adf39f2c220950a063e0529d4ff74
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.7
+  #           distro: alpine
+  #           py_label: py37_
+  #           conda_md5: 751786b92c00b1aeae3f017b781018df
+  #         - conda_ver: 4.5.4
+  #           py_ver: 3.6
+  #           distro: alpine
+  #           conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
+  #         - conda_ver: 4.9.0
+  #           py_ver: 3.9
+  #           distro: debian
+  #           py_label: py38_
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.8
+  #           distro: debian
+  #           py_label: py38_
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.7
+  #           distro: debian
+  #           py_label: py37_
+  #         - conda_ver: 4.5.4
+  #           py_ver: 3.6
+  #           distro: debian
+  #   env:
+  #     CONDA_VER: ${{matrix.conda_ver}}
+  #     PY_VER: ${{matrix.py_ver}}
+  #     DISTRO: ${{matrix.distro}}
+  #     PY_LABEL: ${{matrix.py_label}}
+  #     CONDA_MD5: ${{matrix.conda_md5}}
+  #     DOCKER_CLIENT_TIMEOUT: "120"
+  #     COMPOSE_HTTP_TIMEOUT: "120"
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - name: Compile image
+  #       run: |
+  #         docker-compose -f dist/${DISTRO}/docker-compose.yml build
+  #         IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
+  #         TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
+  #         docker save "${IMAGE}:${TAG}" | gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
+  #     - name: Add image artifact
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+  #         path: >
+  #           ${{format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+  #         retention-days: 1
+  # test:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       include:
+  #         - conda_ver: 4.9.0
+  #           py_ver: 3.9
+  #           distro: alpine
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.8
+  #           distro: alpine
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.7
+  #           distro: alpine
+  #         - conda_ver: 4.5.4
+  #           py_ver: 3.6
+  #           distro: alpine
+  #         - conda_ver: 4.9.0
+  #           py_ver: 3.9
+  #           distro: debian
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.8
+  #           distro: debian
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.7
+  #           distro: debian
+  #         - conda_ver: 4.5.4
+  #           py_ver: 3.6
+  #           distro: debian
+  #   env:
+  #     CONDA_VER: ${{matrix.conda_ver}}
+  #     PY_VER: ${{matrix.py_ver}}
+  #     DISTRO: ${{matrix.distro}}
+  #   steps:
+  #     - name: Fetch image artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+  #     - name: Verify image
+  #       run: |
+  #         docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
+  #         REF=$(docker images --filter "reference=datajoint/*" \
+  #               --format "{{.Repository}}:{{.Tag}}")
+  #         SHELL_CMD=$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}')
+  #         docker run --rm "$REF" $SHELL_CMD -c "conda -V 2>&1" | grep "$CONDA_VER"
+  #         docker run --rm "$REF" $SHELL_CMD -c "python --version 2>&1" | grep "$PY_VER"
+  #         docker run --rm "$REF" $SHELL_CMD -c "cat /etc/issue 2>&1" | grep -i "$DISTRO"
+  publish-docs:
+    # if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - conda_ver: 4.9.0
-            py_ver: 3.9
-            distro: alpine
-            py_label: py38_
-            conda_md5: d63adf39f2c220950a063e0529d4ff74
-          - conda_ver: 4.8.3
-            py_ver: 3.8
-            distro: alpine
-            py_label: py38_
-            conda_md5: d63adf39f2c220950a063e0529d4ff74
-          - conda_ver: 4.8.3
-            py_ver: 3.7
-            distro: alpine
-            py_label: py37_
-            conda_md5: 751786b92c00b1aeae3f017b781018df
-          - conda_ver: 4.5.4
-            py_ver: 3.6
-            distro: alpine
-            conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
-          - conda_ver: 4.9.0
-            py_ver: 3.9
-            distro: debian
-            py_label: py38_
-          - conda_ver: 4.8.3
-            py_ver: 3.8
-            distro: debian
-            py_label: py38_
-          - conda_ver: 4.8.3
-            py_ver: 3.7
-            distro: debian
-            py_label: py37_
-          - conda_ver: 4.5.4
-            py_ver: 3.6
-            distro: debian
-    env:
-      CONDA_VER: ${{matrix.conda_ver}}
-      PY_VER: ${{matrix.py_ver}}
-      DISTRO: ${{matrix.distro}}
-      PY_LABEL: ${{matrix.py_label}}
-      CONDA_MD5: ${{matrix.conda_md5}}
-      DOCKER_CLIENT_TIMEOUT: "120"
-      COMPOSE_HTTP_TIMEOUT: "120"
     steps:
-      - uses: actions/checkout@v2
-      - name: Compile image
-        run: |
-          docker-compose -f dist/${DISTRO}/docker-compose.yml build
-          IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
-          TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
-          docker save "${IMAGE}:${TAG}" | gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
-      - name: Add image artifact
-        uses: actions/upload-artifact@v2
+      - uses: actions/checkout@v1
+      - name: Build docs
+        uses: ammaraskar/sphinx-action@master
         with:
-          name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
-          path: >
-            ${{format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
-          retention-days: 1
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - conda_ver: 4.9.0
-            py_ver: 3.9
-            distro: alpine
-          - conda_ver: 4.8.3
-            py_ver: 3.8
-            distro: alpine
-          - conda_ver: 4.8.3
-            py_ver: 3.7
-            distro: alpine
-          - conda_ver: 4.5.4
-            py_ver: 3.6
-            distro: alpine
-          - conda_ver: 4.9.0
-            py_ver: 3.9
-            distro: debian
-          - conda_ver: 4.8.3
-            py_ver: 3.8
-            distro: debian
-          - conda_ver: 4.8.3
-            py_ver: 3.7
-            distro: debian
-          - conda_ver: 4.5.4
-            py_ver: 3.6
-            distro: debian
-    env:
-      CONDA_VER: ${{matrix.conda_ver}}
-      PY_VER: ${{matrix.py_ver}}
-      DISTRO: ${{matrix.distro}}
-    steps:
-      - name: Fetch image artifact
-        uses: actions/download-artifact@v2
+          docs-folder: "docs/"
+      - name: Upload docs artifact
+        uses: actions/upload-artifact@v1
         with:
-          name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
-      - name: Verify image
-        run: |
-          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
-          REF=$(docker images --filter "reference=datajoint/*" \
-                --format "{{.Repository}}:{{.Tag}}")
-          SHELL_CMD=$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}')
-          docker run --rm "$REF" $SHELL_CMD -c "conda -V 2>&1" | grep "$CONDA_VER"
-          docker run --rm "$REF" $SHELL_CMD -c "python --version 2>&1" | grep "$PY_VER"
-          docker run --rm "$REF" $SHELL_CMD -c "cat /etc/issue 2>&1" | grep -i "$DISTRO"
-  publish:
-    if: github.event_name == 'push'
-    needs: test
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        include:
-          - conda_ver: 4.9.0
-            py_ver: 3.9
-            distro: alpine
-          - conda_ver: 4.8.3
-            py_ver: 3.8
-            distro: alpine
-          - conda_ver: 4.8.3
-            py_ver: 3.7
-            distro: alpine
-          - conda_ver: 4.5.4
-            py_ver: 3.6
-            distro: alpine
-          - conda_ver: 4.9.0
-            py_ver: 3.9
-            distro: debian
-          - conda_ver: 4.8.3
-            py_ver: 3.8
-            distro: debian
-          - conda_ver: 4.8.3
-            py_ver: 3.7
-            distro: debian
-          - conda_ver: 4.5.4
-            py_ver: 3.6
-            distro: debian
-    env:
-      CONDA_VER: ${{matrix.conda_ver}}
-      PY_VER: ${{matrix.py_ver}}
-      DISTRO: ${{matrix.distro}}
-      DOCKER_USERNAME: ${{secrets.docker_username}}
-      DOCKER_PASSWORD: ${{secrets.docker_password}}
-      COMMIT_SHA: ${{github.event.pull_request.head.sha}}
-    steps:
-      - name: Fetch image artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
-      - name: Publish image
-        run: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
-          IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
-          TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
-          docker push "${IMAGE}:{TAG}"
-          docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
-          docker push "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
-          [ "$PY_VER" == "3.9" ] && [ "$DISTRO" == "debian" ] \
-                  && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" \
-                  && docker push "${IMAGE}:latest" \
-              || echo "skipping 'latest' tag..."
+          name: DocumentationHTML
+          path: docs/_build/html/
+  # publish:
+  #   if: github.event_name == 'push'
+  #   needs: test
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     matrix:
+  #       include:
+  #         - conda_ver: 4.9.0
+  #           py_ver: 3.9
+  #           distro: alpine
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.8
+  #           distro: alpine
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.7
+  #           distro: alpine
+  #         - conda_ver: 4.5.4
+  #           py_ver: 3.6
+  #           distro: alpine
+  #         - conda_ver: 4.9.0
+  #           py_ver: 3.9
+  #           distro: debian
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.8
+  #           distro: debian
+  #         - conda_ver: 4.8.3
+  #           py_ver: 3.7
+  #           distro: debian
+  #         - conda_ver: 4.5.4
+  #           py_ver: 3.6
+  #           distro: debian
+  #   env:
+  #     CONDA_VER: ${{matrix.conda_ver}}
+  #     PY_VER: ${{matrix.py_ver}}
+  #     DISTRO: ${{matrix.distro}}
+  #     DOCKER_USERNAME: ${{secrets.docker_username}}
+  #     DOCKER_PASSWORD: ${{secrets.docker_password}}
+  #     COMMIT_SHA: ${{github.event.pull_request.head.sha}}
+  #   steps:
+  #     - name: Fetch image artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+  #     - name: Publish image
+  #       run: |
+  #         echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  #         docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
+  #         IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
+  #         TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
+  #         docker push "${IMAGE}:{TAG}"
+  #         docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
+  #         docker push "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
+  #         [ "$PY_VER" == "3.9" ] && [ "$DISTRO" == "debian" ] \
+  #                 && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" \
+  #                 && docker push "${IMAGE}:latest" \
+  #             || echo "skipping 'latest' tag..."
