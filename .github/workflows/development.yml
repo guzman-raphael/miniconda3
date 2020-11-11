@@ -157,8 +157,6 @@ jobs:
           name: ${{ format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro) }}
       - name: Publish image
         run: |
-          env
-          echo
           #echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
           IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
@@ -166,7 +164,12 @@ jobs:
           # docker push "${IMAGE}:{TAG}"
           docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
           # docker push "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
-          [ "$PY_VER" == "3.9" && "$DISTRO" == "debian" ] && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" || echo "skipping 'latest' tag..."
+          if [ "$PY_VER" == "3.9" && "$DISTRO" == "debian" ];then
+            docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest"
+            # docker push "${IMAGE}:latest"
+          else
+            echo "skipping 'latest' tag..."
+          fi
           # [ "$PY_VER" == "3.9" && "$DISTRO" == "debian" ] && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" && docker push "${IMAGE}:latest" || echo "skipping 'latest' tag..."
 
           docker images
