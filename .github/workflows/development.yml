@@ -9,11 +9,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - conda_ver: 4.9.0
-            py_ver: 3.9
-            distro: alpine
-            py_label: py38_
-            conda_md5: d63adf39f2c220950a063e0529d4ff74
+          # - conda_ver: 4.9.0
+          #   py_ver: 3.9
+          #   distro: alpine
+          #   py_label: py38_
+          #   conda_md5: d63adf39f2c220950a063e0529d4ff74
           # - conda_ver: 4.8.3
           #   py_ver: 3.8
           #   distro: alpine
@@ -28,10 +28,10 @@ jobs:
           #   py_ver: 3.6
           #   distro: alpine
           #   conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
-          # - conda_ver: 4.9.0
-          #   py_ver: 3.9
-          #   distro: debian
-          #   py_label: py38_
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: debian
+            py_label: py38_
           # - conda_ver: 4.8.3
           #   py_ver: 3.8
           #   distro: debian
@@ -71,9 +71,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - conda_ver: 4.9.0
-            py_ver: 3.9
-            distro: alpine
+          # - conda_ver: 4.9.0
+          #   py_ver: 3.9
+          #   distro: alpine
           # - conda_ver: 4.8.3
           #   py_ver: 3.8
           #   distro: alpine
@@ -83,9 +83,9 @@ jobs:
           # - conda_ver: 4.5.4
           #   py_ver: 3.6
           #   distro: alpine
-          # - conda_ver: 4.9.0
-          #   py_ver: 3.9
-          #   distro: debian
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: debian
           # - conda_ver: 4.8.3
           #   py_ver: 3.8
           #   distro: debian
@@ -119,9 +119,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - conda_ver: 4.9.0
-            py_ver: 3.9
-            distro: alpine
+          # - conda_ver: 4.9.0
+          #   py_ver: 3.9
+          #   distro: alpine
           # - conda_ver: 4.8.3
           #   py_ver: 3.8
           #   distro: alpine
@@ -131,9 +131,9 @@ jobs:
           # - conda_ver: 4.5.4
           #   py_ver: 3.6
           #   distro: alpine
-          # - conda_ver: 4.9.0
-          #   py_ver: 3.9
-          #   distro: debian
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: debian
           # - conda_ver: 4.8.3
           #   py_ver: 3.8
           #   distro: debian
@@ -149,8 +149,8 @@ jobs:
       DISTRO: ${{ matrix.distro }}
       DOCKER_USERNAME: ${{ secrets.docker_username }}
       DOCKER_PASSWORD: ${{ secrets.docker_password }}
+      COMMIT_SHA: ${{github.event.pull_request.head.sha}}
     steps:
-      - uses: actions/checkout@v2
       - name: Fetch image artifact
         uses: actions/download-artifact@v2
         with:
@@ -159,12 +159,15 @@ jobs:
         run: |
           env
           echo
-          echo "$DOCKER_USERNAME" | base64 -w 0 && echo
-          echo
           #echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
           IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
           TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
+          # docker push "${IMAGE}:{TAG}"
+          docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
+          # docker push "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
+          [ "$PY_VER" == "3.9" && "$DISTRO" == "debian" ] && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" || echo "skipping 'latest' tag..."
+          # [ "$PY_VER" == "3.9" && "$DISTRO" == "debian" ] && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" && docker push "${IMAGE}:latest" || echo "skipping 'latest' tag..."
 
           docker images
 
