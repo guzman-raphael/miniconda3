@@ -63,7 +63,8 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
-          path: ${{format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+          path: >
+            ${{format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
           retention-days: 1
   test:
     needs: build
@@ -107,13 +108,14 @@ jobs:
       - name: Verify image
         run: |
           docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
-          REF=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}:{{.Tag}}")
+          REF=$(docker images --filter "reference=datajoint/*" \
+                --format "{{.Repository}}:{{.Tag}}")
           SHELL_CMD=$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}')
           docker run --rm "$REF" $SHELL_CMD -c "conda -V 2>&1" | grep "$CONDA_VER"
           docker run --rm "$REF" $SHELL_CMD -c "python --version 2>&1" | grep "$PY_VER"
           docker run --rm "$REF" $SHELL_CMD -c "cat /etc/issue 2>&1" | grep -i "$DISTRO"
   publish:
-    # if: github.event_name == 'push'
+    if: github.event_name == 'push'
     needs: test
     runs-on: ubuntu-latest
     strategy:
@@ -157,47 +159,14 @@ jobs:
           name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
       - name: Publish image
         run: |
-          #echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
           IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
           TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
-          # docker push "${IMAGE}:{TAG}"
+          docker push "${IMAGE}:{TAG}"
           docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
-          # docker push "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
-          [ "$PY_VER" == "3.9" ] && [ "$DISTRO" == "debian" ] && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" || echo "skipping 'latest' tag..."
-          # [ "$PY_VER" == "3.9" && "$DISTRO" == "debian" ] && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" && docker push "${IMAGE}:latest" || echo "skipping 'latest' tag..."
-
-          docker images
-
-
-
-  # deploy:
-
-
-  # CI:
-  #   if: github.event_name == 'push' || github.event_name == 'pull_request'
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       matlab_version: ["R2019a"]
-  #       mysql_version: ["8.0.18", "5.7", "5.6"]
-  #       include:
-  #         - matlab_version: "R2018b"
-  #           mysql_version: "5.7"
-  #         - matlab_version: "R2016b"
-  #           mysql_version: "5.7"
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Run primary tests
-  #       env:
-  #         MATLAB_UID: "1001"
-  #         MATLAB_GID: "116"
-  #         MATLAB_USER: ${{ secrets.matlab_user }}
-  #         MATLAB_HOSTID: ${{ secrets.matlab_hostid }}
-  #         MATLAB_VERSION: ${{ matrix.matlab_version }}
-  #         MYSQL_TAG: ${{ matrix.mysql_version }}
-  #         MATLAB_LICENSE: ${{ secrets[format('matlab_license_{0}', matrix.matlab_version)] }}
-  #         DOCKER_CLIENT_TIMEOUT: "120"
-  #         COMPOSE_HTTP_TIMEOUT: "120"
-  #       run: |
-  #         docker-compose -f LNX-docker-compose.yml up --build --exit-code-from app
+          docker push "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
+          [ "$PY_VER" == "3.9" ] && [ "$DISTRO" == "debian" ] \
+                  && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" \
+                  && docker push "${IMAGE}:latest" \
+              || echo "skipping 'latest' tag..."
