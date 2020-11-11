@@ -110,9 +110,9 @@ jobs:
           REF=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}:{{.Tag}}")
           SHELL_CMD=$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}')
           echo "$SHELL_CMD"
-          docker run --rm "$REF" "$SHELL_CMD" -c "conda -V 2>&1" | grep "$CONDA_VER"
-          docker run --rm "$REF" "$SHELL_CMD" -c "python --version 2>&1" | grep "$PY_VER"
-          docker run --rm "$REF" "$SHELL_CMD" -c "cat /etc/issue 2>&1" | grep -i "$DISTRO"
+          docker run --rm "$REF" $SHELL_CMD -c "conda -V 2>&1" | grep "$CONDA_VER"
+          docker run --rm "$REF" $SHELL_CMD -c "python --version 2>&1" | grep "$PY_VER"
+          docker run --rm "$REF" $SHELL_CMD -c "cat /etc/issue 2>&1" | grep -i "$DISTRO"
 
 
   # deploy:
