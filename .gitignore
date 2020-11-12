@@ -1,3 +1,4 @@
 .vscode
 *.tar.gz
 docs/_build
+sphinx-validator.yaml
