@@ -97,7 +97,7 @@ jobs:
         #     py_label: py37_
         #   - conda_ver: 4.5.4
         #     py_ver: 3.6
-            distro: debian
+        #     distro: debian
     env:
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
