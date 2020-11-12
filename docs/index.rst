@@ -1,5 +1,5 @@
 Documentation for the DataJoint's Miniconda3 Image
-####
+##################################################
 
 | A minimal base docker image with ``conda``.
 | For more details, have a look at `prebuilt images <https://hub.docker.com/r/datajoint/miniconda3>`_, `source <https://github.com/datajoint/miniconda3-docker>`_, and `documentation <https://datajoint.github.io/miniconda3-docker>`_.
@@ -9,22 +9,22 @@ Documentation for the DataJoint's Miniconda3 Image
    :caption: Contents:
 
 Launch Locally
-****
+**************
 
 Debian
-====
+======
 .. code-block:: shell
 
    docker-compose -f dist/debian/docker-compose.yml --env-file config/.env up --build
 
 Alpine
-====
+======
 .. code-block:: shell
 
    docker-compose -f dist/alpine/docker-compose.yml --env-file config/.env up --build
 
 Features
-****
+********
 
 * Provides a minimal docker image with ``conda``, ``python``, and ``pip``.
 * As long as container user is member of ``anaconda`` group, they should have acccess to perform ``conda`` and ``pip`` operations within the default environment i.e. ``base``.
@@ -34,7 +34,7 @@ Features
    docker exec -it debian_app_1 bash || docker exec -it alpine_app_1 sh -l
 
 Miniconda3 Release Archive
-****
+**************************
 
 * Miniconda3 releases are pulled from 2 mirrored targets:
 
@@ -46,6 +46,6 @@ Miniconda3 Release Archive
   Miniconda3-py[0-9]+_[0-9.]+-Linux-x86_64\.sh
 
 Notes
-****
+*****
 
 Development for this image was heavily borrowed from `<https://github.com/ContinuumIO/docker-images>`_.
