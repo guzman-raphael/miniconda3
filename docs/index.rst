@@ -15,13 +15,13 @@ Debian
 ======
 .. code-block:: shell
 
-   docker-compose -f dist/debian/docker-compose.yml --env-file config/.env up --build
+   docker-compose -f dist/debian/docker-compose.yaml --env-file config/.env up --build
 
 Alpine
 ======
 .. code-block:: shell
 
-   docker-compose -f dist/alpine/docker-compose.yml --env-file config/.env up --build
+   docker-compose -f dist/alpine/docker-compose.yaml --env-file config/.env up --build
 
 Features
 ********
