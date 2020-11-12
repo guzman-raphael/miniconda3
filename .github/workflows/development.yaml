@@ -150,7 +150,6 @@ jobs:
       DISTRO: ${{matrix.distro}}
       DOCKER_USERNAME: ${{secrets.docker_username}}
       DOCKER_PASSWORD: ${{secrets.docker_password}}
-      COMMIT_SHA: ${{github.event.pull_request.head.sha}}
     steps:
       - name: Fetch image artifact
         uses: actions/download-artifact@v2
@@ -163,8 +162,8 @@ jobs:
           IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
           TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
           docker push "${IMAGE}:{TAG}"
-          docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
-          docker push "${IMAGE}:${TAG}-${COMMIT_SHA:0:7}"
+          docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
+          docker push "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
           [ "$PY_VER" == "3.9" ] && [ "$DISTRO" == "debian" ] \
                   && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" \
                   && docker push "${IMAGE}:latest" \
