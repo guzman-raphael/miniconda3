@@ -27,6 +27,8 @@ Features
 ********
 
 * Provides a minimal docker image with ``conda``, ``python``, and ``pip``.
+* Adds ``conda-forge`` channel as default.
+* Disables ``conda`` auto-update functionality. This prevents image from growing large between builds. To update, invoke ``conda update`` explicitly.
 * As long as container user is member of ``anaconda`` group, they should have acccess to perform ``conda`` and ``pip`` operations within the default environment i.e. ``base``.
 * To properly shell into the container and activate the default environment, see the ``CMD`` specification in the ``Dockerfile``. For example:
 .. code-block:: shell
