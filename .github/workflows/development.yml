@@ -3,101 +3,46 @@ on:
   push:
     branches: [master]
   pull_request: null
-env:
-  MATRIX_SPEC: |
-    [
-      {
-        "conda_ver": "4.9.0",
-        "py_ver": "3.9",
-        "distro": "alpine",
-        "py_label": "py38_",
-        "conda_md5": "d63adf39f2c220950a063e0529d4ff74"
-      },
-      {
-        "conda_ver": "4.8.3",
-        "py_ver": "3.8",
-        "distro": "alpine",
-        "py_label": "py38_",
-        "conda_md5": "d63adf39f2c220950a063e0529d4ff74"
-      },
-      {
-        "conda_ver": "4.8.3",
-        "py_ver": "3.7",
-        "distro": "alpine",
-        "py_label": "py37_",
-        "conda_md5": "751786b92c00b1aeae3f017b781018df"
-      },
-      {
-        "conda_ver": "4.5.4",
-        "py_ver": "3.6",
-        "distro": "alpine",
-        "conda_md5": "a946ea1d0c4a642ddf0c3a26a18bb16d"
-      },
-      {
-        "conda_ver": "4.9.0",
-        "py_ver": "3.9",
-        "distro": "debian",
-        "py_label": "py38_"
-      },
-      {
-        "conda_ver": "4.8.3",
-        "py_ver": "3.8",
-        "distro": "debian",
-        "py_label": "py38_"
-      },
-      {
-        "conda_ver": "4.8.3",
-        "py_ver": "3.7",
-        "distro": "debian",
-        "py_label": "py37_"
-      },
-      {
-        "conda_ver": "4.5.4",
-        "py_ver": "3.6",
-        "distro": "debian"
-      }
-    ]
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include: ${{fromJson(env.MATRIX_SPEC)}}
-        # include:
-        #   - conda_ver: 4.9.0
-        #     py_ver: 3.9
-        #     distro: alpine
-        #     py_label: py38_
-        #     conda_md5: d63adf39f2c220950a063e0529d4ff74
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.8
-        #     distro: alpine
-        #     py_label: py38_
-        #     conda_md5: d63adf39f2c220950a063e0529d4ff74
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.7
-        #     distro: alpine
-        #     py_label: py37_
-        #     conda_md5: 751786b92c00b1aeae3f017b781018df
-        #   - conda_ver: 4.5.4
-        #     py_ver: 3.6
-        #     distro: alpine
-        #     conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
-        #   - conda_ver: 4.9.0
-        #     py_ver: 3.9
-        #     distro: debian
-        #     py_label: py38_
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.8
-        #     distro: debian
-        #     py_label: py38_
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.7
-        #     distro: debian
-        #     py_label: py37_
-        #   - conda_ver: 4.5.4
-        #     py_ver: 3.6
-        #     distro: debian
+        include:
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: alpine
+            py_label: py38_
+            conda_md5: d63adf39f2c220950a063e0529d4ff74
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: alpine
+            py_label: py38_
+            conda_md5: d63adf39f2c220950a063e0529d4ff74
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: alpine
+            py_label: py37_
+            conda_md5: 751786b92c00b1aeae3f017b781018df
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: alpine
+            conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: debian
+            py_label: py38_
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: debian
+            py_label: py38_
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: debian
+            py_label: py37_
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: debian
     env:
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
@@ -126,32 +71,31 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include: ${{fromJson(env.MATRIX_SPEC)}}
-        # include:
-        #   - conda_ver: 4.9.0
-        #     py_ver: 3.9
-        #     distro: alpine
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.8
-        #     distro: alpine
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.7
-        #     distro: alpine
-        #   - conda_ver: 4.5.4
-        #     py_ver: 3.6
-        #     distro: alpine
-        #   - conda_ver: 4.9.0
-        #     py_ver: 3.9
-        #     distro: debian
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.8
-        #     distro: debian
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.7
-        #     distro: debian
-        #   - conda_ver: 4.5.4
-        #     py_ver: 3.6
-        #     distro: debian
+        include:
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: alpine
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: alpine
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: alpine
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: alpine
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: debian
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: debian
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: debian
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: debian
     env:
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
@@ -176,32 +120,31 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include: ${{fromJson(env.MATRIX_SPEC)}}
-        # include:
-        #   - conda_ver: 4.9.0
-        #     py_ver: 3.9
-        #     distro: alpine
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.8
-        #     distro: alpine
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.7
-        #     distro: alpine
-        #   - conda_ver: 4.5.4
-        #     py_ver: 3.6
-        #     distro: alpine
-        #   - conda_ver: 4.9.0
-        #     py_ver: 3.9
-        #     distro: debian
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.8
-        #     distro: debian
-        #   - conda_ver: 4.8.3
-        #     py_ver: 3.7
-        #     distro: debian
-        #   - conda_ver: 4.5.4
-        #     py_ver: 3.6
-        #     distro: debian
+        include:
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: alpine
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: alpine
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: alpine
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: alpine
+          - conda_ver: 4.9.0
+            py_ver: 3.9
+            distro: debian
+          - conda_ver: 4.8.3
+            py_ver: 3.8
+            distro: debian
+          - conda_ver: 4.8.3
+            py_ver: 3.7
+            distro: debian
+          - conda_ver: 4.5.4
+            py_ver: 3.6
+            distro: debian
     env:
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
