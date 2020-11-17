@@ -1,9 +1,148 @@
-<!doctype html>
-<html>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
-    <title>Some Title</title>
-  </head>
-  <body>
-    <p>Some text.</p>
+    <meta charset="utf-8" />
+    <title>Documentation for the DataJoint’s Miniconda3 Image &#8212; datajoint/miniconda3 0.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">datajoint/miniconda3 0.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="documentation-for-the-datajoint-s-miniconda3-image">
+<h1>Documentation for the DataJoint’s Miniconda3 Image<a class="headerlink" href="#documentation-for-the-datajoint-s-miniconda3-image" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line">A minimal base docker image with <code class="docutils literal notranslate"><span class="pre">conda</span></code>.</div>
+<div class="line">For more details, have a look at <a class="reference external" href="https://hub.docker.com/r/datajoint/miniconda3">prebuilt images</a>, <a class="reference external" href="https://github.com/datajoint/miniconda3-docker">source</a>, and <a class="reference external" href="https://datajoint.github.io/miniconda3-docker">documentation</a>.</div>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="launch-locally">
+<h2>Launch Locally<a class="headerlink" href="#launch-locally" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="debian">
+<h3>Debian<a class="headerlink" href="#debian" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker-compose -f dist/debian/docker-compose.yaml --env-file config/.env up --build
+</pre></div>
+</div>
+</div>
+<div class="section" id="alpine">
+<h3>Alpine<a class="headerlink" href="#alpine" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker-compose -f dist/alpine/docker-compose.yaml --env-file config/.env up --build
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Provides a minimal docker image with <code class="docutils literal notranslate"><span class="pre">conda</span></code>, <code class="docutils literal notranslate"><span class="pre">python</span></code>, and <code class="docutils literal notranslate"><span class="pre">pip</span></code>.</p></li>
+<li><p>Adds <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel as default.</p></li>
+<li><p>Disables <code class="docutils literal notranslate"><span class="pre">conda</span></code> auto-update functionality. This prevents image from growing large between builds. To update, invoke <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">update</span></code> explicitly.</p></li>
+<li><p>As long as container user is member of <code class="docutils literal notranslate"><span class="pre">anaconda</span></code> group, they should have acccess to perform <code class="docutils literal notranslate"><span class="pre">conda</span></code> and <code class="docutils literal notranslate"><span class="pre">pip</span></code> operations within the default environment i.e. <code class="docutils literal notranslate"><span class="pre">base</span></code>.</p></li>
+<li><p>To properly shell into the container and activate the default environment, see the <code class="docutils literal notranslate"><span class="pre">CMD</span></code> specification in the <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code>. For example:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> -it debian_app_1 bash <span class="o">||</span> docker <span class="nb">exec</span> -it alpine_app_1 sh -l
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="miniconda3-release-archive">
+<h2>Miniconda3 Release Archive<a class="headerlink" href="#miniconda3-release-archive" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Miniconda3 releases are pulled from 2 mirrored targets:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://repo.anaconda.com/miniconda">https://repo.anaconda.com/miniconda</a></p></li>
+<li><p><a class="reference external" href="https://repo.continuum.io/miniconda">https://repo.continuum.io/miniconda</a></p></li>
+</ul>
+</li>
+<li><p>Compatible <code class="docutils literal notranslate"><span class="pre">conda</span></code> releases obey the following regex:</p>
+<div class="highlight-regex notranslate"><div class="highlight"><pre><span></span>Miniconda3-py[0-9]+_[0-9.]+-Linux-x86_64\.sh
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<p>Development for this image was heavily borrowed from <a class="reference external" href="https://github.com/ContinuumIO/docker-images">https://github.com/ContinuumIO/docker-images</a>.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Documentation for the DataJoint’s Miniconda3 Image</a><ul>
+<li><a class="reference internal" href="#launch-locally">Launch Locally</a><ul>
+<li><a class="reference internal" href="#debian">Debian</a></li>
+<li><a class="reference internal" href="#alpine">Alpine</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#miniconda3-release-archive">Miniconda3 Release Archive</a></li>
+<li><a class="reference internal" href="#notes">Notes</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="#">datajoint/miniconda3 0.0.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2020, Raphael Guzman.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.
+    </div>
   </body>
 </html>
