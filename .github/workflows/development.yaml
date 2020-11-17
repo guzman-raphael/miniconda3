@@ -159,11 +159,9 @@ jobs:
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
           docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
-          IMAGE=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep datajoint\
-              | awk -F: '{print $1}')
-          TAG=$(docker images --format "{{.Repository}}:{{.Tag}}" | grep datajoint\
-              | awk -F: '{print $2}')
-          docker push "${IMAGE}:{TAG}"
+          IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
+          TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
+          docker push "${IMAGE}:${TAG}"
           docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
           docker push "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
           [ "$PY_VER" == "3.9" ] && [ "$DISTRO" == "debian" ] \
