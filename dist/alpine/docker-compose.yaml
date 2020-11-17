@@ -5,8 +5,9 @@ services:
       context: ../..
       dockerfile: dist/alpine/Dockerfile
       args:
-        - CONDA_VERSION
+        - CONDA_VER
         - CONDA_MD5
         - PY_LABEL
-    image: datajoint/miniconda3:${CONDA_VERSION}-py${PY_VERSION}-alpine3.11
+        - PY_VER
+    image: datajoint/miniconda3:${CONDA_VER}-py${PY_VER}-alpine
     command: tail -f /dev/null
