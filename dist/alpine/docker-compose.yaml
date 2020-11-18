@@ -9,7 +9,7 @@ services:
         - CONDA_MD5
         - PY_LABEL
         - PY_VER
-    image: datajoint/miniconda3:${CONDA_VER}-py${PY_VER}-alpine-7210574
+    image: datajoint/miniconda3:${CONDA_VER}-py${PY_VER}-alpine
     command: tail -f /dev/null
     # environment:
     #   - DISPLAY                             # Necessary to allow GUI to route to Docker host

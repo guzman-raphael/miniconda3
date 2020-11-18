@@ -30,7 +30,7 @@ RUN \
 	# Current latest Miniconda3 release
 	[ "${PY_VER}" != "3.9" ] || CONDA_VER=4.8.3 && \
 	apt-get update --fix-missing && \
-	apt-get install -y wget && \
+	apt-get install -y wget bzip2 && \
 	# bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 \
 	# 	libxrender1 git mercurial subversion && \
 	apt-get clean && \

@@ -8,7 +8,7 @@ services:
         - CONDA_VER
         - PY_LABEL
         - PY_VER
-    image: datajoint/miniconda3:${CONDA_VER}-py${PY_VER}-debian-7210574
+    image: datajoint/miniconda3:${CONDA_VER}-py${PY_VER}-debian
     command: tail -f /dev/null
     environment:
       - DISPLAY                             # Necessary to allow GUI to route to Docker host    
