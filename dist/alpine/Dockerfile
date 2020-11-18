@@ -107,8 +107,8 @@ RUN \
 	# conda install -yc conda-forge gtk2 && \
 	[ "${PY_VER}" != "3.9" ] || \
 		conda install -yc conda-forge conda=${CONDA_VER} python=${PY_VER} && \
-	conda clean -ya && \
-	find /opt/conda/conda-meta -user anaconda -exec chmod u+rwx,g+rwx,o-rwx "{}" \;
+	find /opt/conda/conda-meta -user anaconda -exec chmod u+rwx,g+rwx,o-rwx "{}" \; && \
+	conda clean -ya
 
 ENV APK_REQUIREMENTS /tmp/apk_requirements.txt
 ENV PIP_REQUIREMENTS /tmp/pip_requirements.txt
@@ -133,6 +133,8 @@ LABEL maintainerName="Raphael Guzman" \
 	maintainerEmail="raphael@vathes.com" \
 	maintainerCompany="DataJoint"
 USER anaconda:anaconda
+ENV PATH /opt/conda/bin:$PATH
+RUN conda clean -ya
 ENV ENV "/home/anaconda/.ashrc"
 ENV HOME /home/anaconda
 ENV LANG C.UTF-8
