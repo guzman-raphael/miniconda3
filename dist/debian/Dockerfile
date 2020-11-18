@@ -55,7 +55,7 @@ RUN \
 	conda config --add channels conda-forge && \
 	conda config --set auto_update_conda False && \
 	# allow gui for gnome apps
-	conda install -yc conda-forge gtk2 && \
+	# conda install -yc conda-forge gtk2 && \
 	[ "${PY_VER}" != "3.9" ] || \
 		conda install -yc conda-forge conda=${CONDA_VER} python=${PY_VER} && \
 	conda clean -ya && \
