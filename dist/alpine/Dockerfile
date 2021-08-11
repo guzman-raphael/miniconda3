@@ -73,8 +73,13 @@ RUN \
 USER root:anaconda
 RUN \
 	umask u+rwx,g+rwx,o-rwx && \
+	# Add locale config (not related to miniconda3)
+	wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+	wget -q -O /tmp/glibc-i18n-2.25-r0.apk https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-i18n-2.25-r0.apk && \
+	apk add /tmp/glibc-i18n-2.25-r0.apk && \
+	rm /tmp/glibc-i18n-2.25-r0.apk && \
+	/usr/glibc-compat/bin/localedef -i en_US -c -f UTF-8 en_US.UTF-8 && \
 	# Current latest Miniconda3 release
-	[ "${PY_VER}" != "3.9" ] || CONDA_VER=4.8.3 && \
 	wget --quiet $(echo "https://repo.anaconda.com/miniconda\
 		/Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-x86_64.sh" | \
 		tr -d '\n' | tr -d '\t') && \
@@ -103,10 +108,10 @@ RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	conda config --add channels conda-forge && \
 	conda config --set auto_update_conda False && \
+	[ "${PY_VER}" != "3.6" ] || sed -i "s@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>)(?!\[=<>!\])(\S\+)$')@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>|=)(?!\[=<>!\])(\\\S\+)$')@g" /opt/conda/lib/python3.6/site-packages/conda/models/version.py && \
+	[ "${PY_VER}" != "3.6" ] || sed -i "s|op.__gt__|op.__gt__, '=': lambda x, y: x.startswith(y)|g" /opt/conda/lib/python${PY_VER}/site-packages/conda/models/version.py && \
 	# allow gui for gnome apps
 	# conda install -yc conda-forge gtk2 && \
-	[ "${PY_VER}" != "3.9" ] || \
-		conda install -yc conda-forge conda=${CONDA_VER} python=${PY_VER} && \
 	find /opt/conda/conda-meta -user anaconda -exec chmod u+rwx,g+rwx,o-rwx "{}" \; && \
 	conda clean -ya
 
@@ -125,7 +130,7 @@ WORKDIR /main
 VOLUME /tmp/.X11-unix
 CMD ["sh"]
 
-# #Squashed Final Image
+#Squashed Final Image
 FROM scratch
 COPY --from=miniconda-build / /
 # RUN chmod 4755 /startup && /startup -user=anaconda
@@ -134,7 +139,6 @@ LABEL maintainerName="Raphael Guzman" \
 	maintainerCompany="DataJoint"
 USER anaconda:anaconda
 ENV PATH /opt/conda/bin:$PATH
-RUN conda clean -ya
 ENV ENV "/home/anaconda/.ashrc"
 ENV HOME /home/anaconda
 ENV LANG C.UTF-8

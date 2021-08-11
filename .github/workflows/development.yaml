@@ -8,44 +8,44 @@ jobs:
     strategy:
       matrix:
         include:
-          - conda_ver: 4.9.0
+          - distro: alpine
+            conda_ver: 4.10.3
             py_ver: 3.9
-            distro: alpine
-            py_label: py38_
-            conda_md5: d63adf39f2c220950a063e0529d4ff74
-          - conda_ver: 4.8.3
+            py_label: py39_
+            conda_md5: 8c69f65a4ae27fb41df0fe552b4a8a3b
+          - distro: alpine
+            conda_ver: 4.10.3
             py_ver: 3.8
-            distro: alpine
             py_label: py38_
-            conda_md5: d63adf39f2c220950a063e0529d4ff74
-          - conda_ver: 4.8.3
+            conda_md5: 14da4a9a44b337f7ccb8363537f65b9c
+          - distro: alpine
+            conda_ver: 4.10.3
             py_ver: 3.7
-            distro: alpine
             py_label: py37_
-            conda_md5: 751786b92c00b1aeae3f017b781018df
-          - conda_ver: 4.5.4
+            conda_md5: 9f186c1d86c266acc47dbc1603f0e2ed
+          - distro: alpine
+            conda_ver: 4.5.4
             py_ver: 3.6
-            distro: alpine
             conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
-          - conda_ver: 4.9.0
+          - distro: debian
+            conda_ver: 4.10.3
             py_ver: 3.9
-            distro: debian
-            py_label: py38_
-          - conda_ver: 4.8.3
+            py_label: py39_
+          - distro: debian
+            conda_ver: 4.10.3
             py_ver: 3.8
-            distro: debian
             py_label: py38_
-          - conda_ver: 4.8.3
+          - distro: debian
+            conda_ver: 4.10.3
             py_ver: 3.7
-            distro: debian
             py_label: py37_
-          - conda_ver: 4.5.4
+          - distro: debian
+            conda_ver: 4.5.4
             py_ver: 3.6
-            distro: debian
     env:
+      DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
-      DISTRO: ${{matrix.distro}}
       PY_LABEL: ${{matrix.py_label}}
       CONDA_MD5: ${{matrix.conda_md5}}
       DOCKER_CLIENT_TIMEOUT: "120"
@@ -71,34 +71,43 @@ jobs:
     strategy:
       matrix:
         include:
-          - conda_ver: 4.9.0
+          - distro: alpine
+            conda_ver: 4.10.3
             py_ver: 3.9
-            distro: alpine
-          - conda_ver: 4.8.3
+            package_manager: apk
+          - distro: alpine
+            conda_ver: 4.10.3
             py_ver: 3.8
-            distro: alpine
-          - conda_ver: 4.8.3
+            package_manager: apk
+          - distro: alpine
+            conda_ver: 4.10.3
             py_ver: 3.7
-            distro: alpine
-          - conda_ver: 4.5.4
+            package_manager: apk
+          - distro: alpine
+            conda_ver: 4.5.4
             py_ver: 3.6
-            distro: alpine
-          - conda_ver: 4.9.0
+            package_manager: apk
+          - distro: debian
+            conda_ver: 4.10.3
             py_ver: 3.9
-            distro: debian
-          - conda_ver: 4.8.3
+            package_manager: apt
+          - distro: debian
+            conda_ver: 4.10.3
             py_ver: 3.8
-            distro: debian
-          - conda_ver: 4.8.3
+            package_manager: apt
+          - distro: debian
+            conda_ver: 4.10.3
             py_ver: 3.7
-            distro: debian
-          - conda_ver: 4.5.4
+            package_manager: apt
+          - distro: debian
+            conda_ver: 4.5.4
             py_ver: 3.6
-            distro: debian
+            package_manager: apt
     env:
+      DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
-      DISTRO: ${{matrix.distro}}
+      PACKAGE_MANAGER: ${{matrix.package_manager}}
     steps:
       - name: Fetch image artifact
         uses: actions/download-artifact@v2
@@ -107,12 +116,7 @@ jobs:
       - name: Verify image
         run: |
           docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
-          REF=$(docker images --filter "reference=datajoint/*" \
-                --format "{{.Repository}}:{{.Tag}}")
-          SHELL_CMD=$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}')
-          docker run --rm "$REF" $SHELL_CMD -c "conda -V 2>&1" | grep "$CONDA_VER"
-          docker run --rm "$REF" $SHELL_CMD -c "python --version 2>&1" | grep "$PY_VER"
-          docker run --rm "$REF" $SHELL_CMD -c "cat /etc/issue 2>&1" | grep -i "$DISTRO"
+          tests/main.sh
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     needs: test
@@ -120,34 +124,34 @@ jobs:
     strategy:
       matrix:
         include:
-          - conda_ver: 4.9.0
+          - distro: alpine
+            conda_ver: 4.10.3
             py_ver: 3.9
-            distro: alpine
-          - conda_ver: 4.8.3
+          - distro: alpine
+            conda_ver: 4.10.3
             py_ver: 3.8
-            distro: alpine
-          - conda_ver: 4.8.3
+          - distro: alpine
+            conda_ver: 4.10.3
             py_ver: 3.7
-            distro: alpine
-          - conda_ver: 4.5.4
+          - distro: alpine
+            conda_ver: 4.5.4
             py_ver: 3.6
-            distro: alpine
-          - conda_ver: 4.9.0
+          - distro: debian
+            conda_ver: 4.10.3
             py_ver: 3.9
-            distro: debian
-          - conda_ver: 4.8.3
+          - distro: debian
+            conda_ver: 4.10.3
             py_ver: 3.8
-            distro: debian
-          - conda_ver: 4.8.3
+          - distro: debian
+            conda_ver: 4.10.3
             py_ver: 3.7
-            distro: debian
-          - conda_ver: 4.5.4
+          - distro: debian
+            conda_ver: 4.5.4
             py_ver: 3.6
-            distro: debian
     env:
+      DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
-      DISTRO: ${{matrix.distro}}
       DOCKER_USERNAME: ${{secrets.docker_username}}
       DOCKER_PASSWORD: ${{secrets.docker_password}}
     steps:

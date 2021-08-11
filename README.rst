@@ -10,3 +10,8 @@ temp notes...
 apk add tk
 apt-get install python3-tk -y
 conda install -yc conda-forge gtk2
+set -a && . config/.env && docker-compose -f dist/${DISTRO}/docker-compose.yaml build && tests/main.sh && set +a
+
+# # rebuild image
+# set -o allexport; . config/.env; set +o allexport
+# docker-compose -f dist/${DISTRO}/docker-compose.yaml build

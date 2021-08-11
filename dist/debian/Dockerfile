@@ -28,9 +28,11 @@ USER root:anaconda
 RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	# Current latest Miniconda3 release
-	[ "${PY_VER}" != "3.9" ] || CONDA_VER=4.8.3 && \
 	apt-get update --fix-missing && \
 	apt-get install -y wget bzip2 && \
+	# Add locale config (not related to miniconda3)
+	apt-get install locales -y && \
+	localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
 	# bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 \
 	# 	libxrender1 git mercurial subversion && \
 	apt-get clean && \
@@ -54,10 +56,10 @@ RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	conda config --add channels conda-forge && \
 	conda config --set auto_update_conda False && \
+	[ "${PY_VER}" != "3.6" ] || sed -i "s@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>)(?!\[=<>!\])(\S\+)$')@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>|=)(?!\[=<>!\])(\\\S\+)$')@g" /opt/conda/lib/python3.6/site-packages/conda/models/version.py && \
+	[ "${PY_VER}" != "3.6" ] || sed -i "s|op.__gt__|op.__gt__, '=': lambda x, y: x.startswith(y)|g" /opt/conda/lib/python${PY_VER}/site-packages/conda/models/version.py && \
 	# allow gui for gnome apps
 	# conda install -yc conda-forge gtk2 && \
-	[ "${PY_VER}" != "3.9" ] || \
-		conda install -yc conda-forge conda=${CONDA_VER} python=${PY_VER} && \
 	find /opt/conda/conda-meta -user anaconda -exec chmod u+rwx,g+rwx,o-rwx "{}" \; && \
 	conda clean -ya
 
