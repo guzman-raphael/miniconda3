@@ -116,6 +116,7 @@ jobs:
           name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
       - name: Verify image
         run: |
+          export HOST_UID=$(id -u)
           docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
           tests/main.sh
   publish:
