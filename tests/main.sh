@@ -25,7 +25,7 @@ validate () {
 	assert "python version" "grep -q .${PY_VER}. <<< .$($SHELL_CMD "python --version 2>&1 | awk '{print \$2}'")" $LINENO
 	assert "os version" "$SHELL_CMD 'cat /etc/issue' | grep -qi ${DISTRO}" $LINENO
 	# # verify user environment
-	assert "username" "[ $($SHELL_CMD "id -u -n") == aneaconda ]" $LINENO
+	assert "username" "[ $($SHELL_CMD "id -u -n") == anaconda ]" $LINENO
 	assert "default group" "[ $($SHELL_CMD "id -g -n") == anaconda ]" $LINENO
 	assert "home" "[ $($SHELL_CMD "cd ~ && pwd") == '/home/anaconda' ]" $LINENO
 	if [ $PY_VER == '3.6' ]; then
