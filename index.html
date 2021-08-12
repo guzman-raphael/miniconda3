@@ -55,17 +55,46 @@
 </div>
 <div class="section" id="features">
 <h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
-<ul>
+<ul class="simple">
 <li><p>Provides a minimal docker image with <code class="docutils literal notranslate"><span class="pre">conda</span></code>, <code class="docutils literal notranslate"><span class="pre">python</span></code>, and <code class="docutils literal notranslate"><span class="pre">pip</span></code>.</p></li>
 <li><p>Adds <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code> channel as default.</p></li>
-<li><p>Disables <code class="docutils literal notranslate"><span class="pre">conda</span></code> auto-update functionality. This prevents image from growing large between builds. To update, invoke <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">update</span></code> explicitly.</p></li>
-<li><p>As long as container user is member of <code class="docutils literal notranslate"><span class="pre">anaconda</span></code> group, they should have acccess to perform <code class="docutils literal notranslate"><span class="pre">conda</span></code> and <code class="docutils literal notranslate"><span class="pre">pip</span></code> operations within the default environment i.e. <code class="docutils literal notranslate"><span class="pre">base</span></code>.</p></li>
+<li><p>Disables <code class="docutils literal notranslate"><span class="pre">conda</span></code> auto-update functionality. This prevents the image from growing large between builds. To update, invoke <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">update</span></code> explicitly.</p></li>
+<li><p>Includes <code class="docutils literal notranslate"><span class="pre">en_US.UTF-8</span></code> locale.</p></li>
+<li><p>Creates an internal system user <code class="docutils literal notranslate"><span class="pre">anaconda</span></code>. By default, utilizes <code class="docutils literal notranslate"><span class="pre">anaconda:anaconda</span></code> when creating containers.</p></li>
+<li><p>Image avoids using <code class="docutils literal notranslate"><span class="pre">root</span></code> to preserve possible privilege escalation vulnerabilities on docker host. As a means to perform installs while under <code class="docutils literal notranslate"><span class="pre">anaconda:anaconda</span></code>, you may utilize any combination of the following and trigger it via <code class="docutils literal notranslate"><span class="pre">/entrypoint.sh</span> <span class="pre">[command</span> <span class="pre">to</span> <span class="pre">run</span> <span class="pre">once</span> <span class="pre">completed]</span></code> e.g. <code class="docutils literal notranslate"><span class="pre">/entrypoint.sh</span> <span class="pre">echo</span> <span class="pre">done</span></code>.</p>
+<ul>
+<li><p>Debian dependencies: Create a <code class="docutils literal notranslate"><span class="pre">\n</span></code> delimited file containing the system dependencies at <code class="docutils literal notranslate"><span class="pre">/tmp/apt_requirements.txt</span></code>. This can be created manually within container/image or mounted in.</p></li>
+<li><p>Alpine dependencies: Create a <code class="docutils literal notranslate"><span class="pre">\n</span></code> delimited file containing the system dependencies at <code class="docutils literal notranslate"><span class="pre">/tmp/apk_requirements.txt</span></code>. This can be created manually within container/image or mounted in.</p></li>
+<li><p>Conda dependencies: Create a <code class="docutils literal notranslate"><span class="pre">\n</span></code> delimited file containing the conda dependencies at <code class="docutils literal notranslate"><span class="pre">/tmp/conda_requirements.txt</span></code>. This can be created manually within container/image or mounted in.</p></li>
+<li><p>Pip dependencies: Create a <code class="docutils literal notranslate"><span class="pre">\n</span></code> delimited file containing the pip dependencies at <code class="docutils literal notranslate"><span class="pre">/tmp/pip_requirements.txt</span></code>. This can be created manually within container/image or mounted in.</p></li>
+</ul>
+</li>
+<li><p>When mounting volumes (avoid mounting files with <code class="docutils literal notranslate"><span class="pre">root</span></code> permissions only!), accessing files within image via <code class="docutils literal notranslate"><span class="pre">anaconda:anaconda</span></code> can result in permission denied errors. To avoid this, simply add a <code class="docutils literal notranslate"><span class="pre">user</span></code> spec in <code class="docutils literal notranslate"><span class="pre">docker-compose.yaml</span></code> with the appropriate <code class="docutils literal notranslate"><span class="pre">HOST_UID</span></code> e.g. <code class="docutils literal notranslate"><span class="pre">user:</span> <span class="pre">1000:anaconda</span></code>. Running <code class="docutils literal notranslate"><span class="pre">/entrypoint.sh</span></code> will then trigger a reassociation of <code class="docutils literal notranslate"><span class="pre">anaconda</span></code>’s UID to allow permissions to access mounted files. Note that <code class="docutils literal notranslate"><span class="pre">entrypoint.sh</span></code> is automatically invoked when starting containers. If you are utilizing the included reference <code class="docutils literal notranslate"><span class="pre">docker-compose.yaml</span></code> files, you may simply set the <code class="docutils literal notranslate"><span class="pre">HOST_UID</span></code> environment value when building or starting the container.</p></li>
+<li><p>Applies image compresssion.</p></li>
+</ul>
+</div>
+<div class="section" id="usage-notes">
+<h2>Usage Notes<a class="headerlink" href="#usage-notes" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>As long as a container user is a member of <code class="docutils literal notranslate"><span class="pre">anaconda</span></code> group, they should have acccess to perform <code class="docutils literal notranslate"><span class="pre">conda</span></code> and <code class="docutils literal notranslate"><span class="pre">pip</span></code> operations within the default environment i.e. <code class="docutils literal notranslate"><span class="pre">base</span></code>.</p></li>
 <li><p>To properly shell into the container and activate the default environment, see the <code class="docutils literal notranslate"><span class="pre">CMD</span></code> specification in the <code class="docutils literal notranslate"><span class="pre">Dockerfile</span></code>. For example:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> -it debian_app_1 bash <span class="o">||</span> docker <span class="nb">exec</span> -it alpine_app_1 sh -l
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>docker <span class="nb">exec</span> -it debian_app_1 bash <span class="o">||</span> docker <span class="nb">exec</span> -it alpine_app_1 sh
 </pre></div>
 </div>
 </li>
+<li><p>When installing a <code class="docutils literal notranslate"><span class="pre">conda</span></code> package, make sure to pin the <code class="docutils literal notranslate"><span class="pre">python</span></code> version to prevent upgrade within the <code class="docutils literal notranslate"><span class="pre">base</span></code> environment or perform the <code class="docutils literal notranslate"><span class="pre">conda</span></code> install in a new <code class="docutils literal notranslate"><span class="pre">conda</span></code> environment.</p></li>
 </ul>
+</div>
+<div class="section" id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>To rebuild and run tests locally, execute the following statements:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span> -a  <span class="c1"># automatically export sourced variables</span>
+. config/.env  <span class="c1"># source config for build and tests</span>
+docker-compose -f dist/<span class="si">${</span><span class="nv">DISTRO</span><span class="si">}</span>/docker-compose.yaml build  <span class="c1"># build image</span>
+tests/main.sh  <span class="c1"># run tests</span>
+<span class="nb">set</span> +a  <span class="c1"># disable auto-export behavior for sourced variables</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="miniconda3-release-archive">
 <h2>Miniconda3 Release Archive<a class="headerlink" href="#miniconda3-release-archive" title="Permalink to this headline">¶</a></h2>
@@ -83,8 +112,8 @@
 </li>
 </ul>
 </div>
-<div class="section" id="notes">
-<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="acknowledgements">
+<h2>Acknowledgements<a class="headerlink" href="#acknowledgements" title="Permalink to this headline">¶</a></h2>
 <p>Development for this image was heavily borrowed from <a class="reference external" href="https://github.com/ContinuumIO/docker-images">https://github.com/ContinuumIO/docker-images</a>.</p>
 </div>
 </div>
@@ -104,8 +133,10 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#features">Features</a></li>
+<li><a class="reference internal" href="#usage-notes">Usage Notes</a></li>
+<li><a class="reference internal" href="#testing">Testing</a></li>
 <li><a class="reference internal" href="#miniconda3-release-archive">Miniconda3 Release Archive</a></li>
-<li><a class="reference internal" href="#notes">Notes</a></li>
+<li><a class="reference internal" href="#acknowledgements">Acknowledgements</a></li>
 </ul>
 </li>
 </ul>
