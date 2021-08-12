@@ -74,8 +74,11 @@ USER root:anaconda
 RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	# Add locale config (not related to miniconda3)
-	wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
-	wget -q -O /tmp/glibc-i18n-2.25-r0.apk https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-i18n-2.25-r0.apk && \
+	wget -q -O /etc/apk/keys/sgerrand.rsa.pub \
+		https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+	wget -q -O /tmp/glibc-i18n-2.25-r0.apk \
+		$(echo "https://github.com/sgerrand/alpine-pkg-glibc/releases/download\
+			/2.25-r0/glibc-i18n-2.25-r0.apk" | tr -d '\n' | tr -d '\t') && \
 	apk add /tmp/glibc-i18n-2.25-r0.apk && \
 	rm /tmp/glibc-i18n-2.25-r0.apk && \
 	/usr/glibc-compat/bin/localedef -i en_US -c -f UTF-8 en_US.UTF-8 && \
@@ -108,8 +111,14 @@ RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	conda config --add channels conda-forge && \
 	conda config --set auto_update_conda False && \
-	[ "${PY_VER}" != "3.6" ] || sed -i "s@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>)(?!\[=<>!\])(\S\+)$')@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>|=)(?!\[=<>!\])(\\\S\+)$')@g" /opt/conda/lib/python3.6/site-packages/conda/models/version.py && \
-	[ "${PY_VER}" != "3.6" ] || sed -i "s|op.__gt__|op.__gt__, '=': lambda x, y: x.startswith(y)|g" /opt/conda/lib/python${PY_VER}/site-packages/conda/models/version.py && \
+	[ "${PY_VER}" != "3.6" ] || sed -i \
+		$(echo "s@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>)(?!\[=<>!\])\
+			(\S\+)$')@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>|=)\
+			(?!\[=<>!\])(\\\S\+)$')@g" | tr -d '\n' | tr -d '\t') \
+		/opt/conda/lib/python3.6/site-packages/conda/models/version.py && \
+	[ "${PY_VER}" != "3.6" ] || sed -i \
+		"s|op.__gt__|op.__gt__, '=': lambda x, y: x.startswith(y)|g" \
+		/opt/conda/lib/python${PY_VER}/site-packages/conda/models/version.py && \
 	# allow gui for gnome apps
 	# conda install -yc conda-forge gtk2 && \
 	find /opt/conda/conda-meta -user anaconda -exec chmod u+rwx,g+rwx,o-rwx "{}" \; && \

@@ -21,7 +21,8 @@ func main() {
 	new_home := flag.String("new_home", "", "new home for the update")
 	flag.Parse()
 	// identify user to update
-	record := strings.Split(regexp.MustCompile(*user + "[^\n]+\n").FindString(pass_str), ":")
+	record := strings.Split(regexp.MustCompile(*user + "[^\n]+\n").FindString(pass_str),
+				":")
 	// verify if update necessary
 	if len(record) == 7 {
 		uid, gid, home := record[2], record[3], record[5]
@@ -48,7 +49,8 @@ func main() {
 			os.Symlink(*new_home, "/home/" + *new_user)
 		}
 		// Update user
-		new_record := []string{*new_user, "x", *new_uid, *new_gid, record[4], *new_home, record[6]}
+		new_record := []string{*new_user, "x", *new_uid, *new_gid, record[4],
+				       *new_home, record[6]}
 		pass_str = strings.Replace(
 			pass_str, strings.Join(record, ":"), strings.Join(new_record, ":"), -1)
 		pass_file, _ := os.Create("/etc/passwd")

@@ -15,14 +15,15 @@ umask u+rwx,g+rwx,o-rwx
 
 #Install Conda dependencies
 if [ -f "$CONDA_REQUIREMENTS" ]; then
-    conda install -yc conda-forge python==$(python -V 2>&1 | awk '{print $2}') --file $CONDA_REQUIREMENTS
-    find /opt/conda/conda-meta -user $ORIG_USER -exec chmod u+rwx,g+rwx,o-rwx "{}" \;
-    conda clean -ya
+	conda install -yc conda-forge python==$(python -V 2>&1 | awk '{print $2}') \
+		--file $CONDA_REQUIREMENTS
+	find /opt/conda/conda-meta -user $ORIG_USER -exec chmod u+rwx,g+rwx,o-rwx "{}" \;
+	conda clean -ya
 fi
 
 #Install Python dependencies
 if [ -f "$PIP_REQUIREMENTS" ]; then
-    pip install -r $PIP_REQUIREMENTS --upgrade --no-cache-dir
+	pip install -r $PIP_REQUIREMENTS --upgrade --no-cache-dir
 fi
 
 #Run command
