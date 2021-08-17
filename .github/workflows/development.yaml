@@ -116,7 +116,7 @@ jobs:
             ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
                 matrix.image_platform)}}
           path: >
-            ${{format('{0}-py{1}-{2}-{3}.tar.gz', matrix.conda_ver, matrix.py_ver, \
+            ${{format('{0}-py{1}-{2}-{3}.tar.gz', matrix.conda_ver, matrix.py_ver,
                 matrix.distro, matrix.image_platform)}}
           retention-days: 1
   test:
@@ -216,8 +216,9 @@ jobs:
       - name: Fetch image artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,\
-              matrix.image_platform)}}
+          name: >
+            ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
+                matrix.image_platform)}}
       - name: Run integration tests
         run: |
           export HOST_UID=$(id -u)
@@ -306,8 +307,9 @@ jobs:
       - name: Fetch image artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,\
-              matrix.image_platform)}}
+          name: >
+            ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
+                matrix.image_platform)}}
       - name: Publish image
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
