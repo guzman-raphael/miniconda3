@@ -101,6 +101,8 @@ jobs:
       CONDA_MD5: ${{matrix.conda_md5}}
       DOCKER_CLIENT_TIMEOUT: "120"
       COMPOSE_HTTP_TIMEOUT: "120"
+      COMPOSE_DOCKER_CLI_BUILD: "1"
+      DOCKER_BUILDKIT: "1"
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU
