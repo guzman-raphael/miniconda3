@@ -112,8 +112,9 @@ jobs:
       - name: Add image artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,\
-              matrix.image_platform)}}
+          name: >
+            ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro, \
+                matrix.image_platform)}}
           path: >
             ${{format('{0}-py{1}-{2}-{3}.tar.gz', matrix.conda_ver, matrix.py_ver, \
                 matrix.distro, matrix.image_platform)}}
