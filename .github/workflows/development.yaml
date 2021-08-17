@@ -103,6 +103,10 @@ jobs:
       COMPOSE_HTTP_TIMEOUT: "120"
     steps:
       - uses: actions/checkout@v2
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
       - name: Compile image
         run: |
           docker-compose -f dist/${DISTRO}/docker-compose.yaml build
