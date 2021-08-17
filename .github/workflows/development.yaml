@@ -9,41 +9,92 @@ jobs:
       matrix:
         include:
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.9
             py_label: py39_
             conda_md5: 8c69f65a4ae27fb41df0fe552b4a8a3b
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.8
             py_label: py38_
             conda_md5: 14da4a9a44b337f7ccb8363537f65b9c
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.7
             py_label: py37_
             conda_md5: 9f186c1d86c266acc47dbc1603f0e2ed
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.5.4
             py_ver: 3.6
             conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
           - distro: debian
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.9
             py_label: py39_
           - distro: debian
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.8
             py_label: py38_
           - distro: debian
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.7
             py_label: py37_
           - distro: debian
+            image_platform: linux/amd64
+            conda_ver: 4.5.4
+            py_ver: 3.6
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.9
+            py_label: py39_
+            conda_md5: 8c69f65a4ae27fb41df0fe552b4a8a3b
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.8
+            py_label: py38_
+            conda_md5: 14da4a9a44b337f7ccb8363537f65b9c
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.7
+            py_label: py37_
+            conda_md5: 9f186c1d86c266acc47dbc1603f0e2ed
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.5.4
+            py_ver: 3.6
+            conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
+          - distro: debian
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.9
+            py_label: py39_
+          - distro: debian
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.8
+            py_label: py38_
+          - distro: debian
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.7
+            py_label: py37_
+          - distro: debian
+            image_platform: linux/arm64/v8
             conda_ver: 4.5.4
             py_ver: 3.6
     env:
       DISTRO: ${{matrix.distro}}
+      IMAGE_PLATFORM: ${{matrix.image_platform}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
       PY_LABEL: ${{matrix.py_label}}
@@ -55,15 +106,17 @@ jobs:
       - name: Compile image
         run: |
           docker-compose -f dist/${DISTRO}/docker-compose.yaml build
-          IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
-          TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
-          docker save "${IMAGE}:${TAG}" | gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
+          REF=$(eval "echo $(cat dist/${DISTRO}/docker-compose.yaml | grep 'image:' | \
+              awk '{print $2}')")
+          docker save "${REF}" | gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
       - name: Add image artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+          name: ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,\
+              matrix.image_platform)}}
           path: >
-            ${{format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+            ${{format('{0}-py{1}-{2}-{3}.tar.gz', matrix.conda_ver, matrix.py_ver, \
+                matrix.distro, matrix.image_platform)}}
           retention-days: 1
   test:
     needs: build
@@ -72,39 +125,88 @@ jobs:
       matrix:
         include:
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.9
             package_manager: apk
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.8
             package_manager: apk
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.7
             package_manager: apk
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.5.4
             py_ver: 3.6
             package_manager: apk
           - distro: debian
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.9
             package_manager: apt
           - distro: debian
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.8
             package_manager: apt
           - distro: debian
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.7
             package_manager: apt
           - distro: debian
+            image_platform: linux/amd64
+            conda_ver: 4.5.4
+            py_ver: 3.6
+            package_manager: apt
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.9
+            package_manager: apk
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.8
+            package_manager: apk
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.7
+            package_manager: apk
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.5.4
+            py_ver: 3.6
+            package_manager: apk
+          - distro: debian
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.9
+            package_manager: apt
+          - distro: debian
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.8
+            package_manager: apt
+          - distro: debian
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.7
+            package_manager: apt
+          - distro: debian
+            image_platform: linux/arm64/v8
             conda_ver: 4.5.4
             py_ver: 3.6
             package_manager: apt
     env:
       DISTRO: ${{matrix.distro}}
+      IMAGE_PLATFORM: ${{matrix.image_platform}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
       PACKAGE_MANAGER: ${{matrix.package_manager}}
@@ -113,11 +215,12 @@ jobs:
       - name: Fetch image artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+          name: ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,\
+              matrix.image_platform)}}
       - name: Run integration tests
         run: |
           export HOST_UID=$(id -u)
-          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
+          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}-${IMAGE_PLATFORM}.tar.gz"
           tests/main.sh
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -127,46 +230,91 @@ jobs:
       matrix:
         include:
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.9
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.8
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.7
           - distro: alpine
+            image_platform: linux/amd64
             conda_ver: 4.5.4
             py_ver: 3.6
           - distro: debian
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.9
           - distro: debian
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.8
           - distro: debian
+            image_platform: linux/amd64
             conda_ver: 4.10.3
             py_ver: 3.7
           - distro: debian
+            image_platform: linux/amd64
+            conda_ver: 4.5.4
+            py_ver: 3.6
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.9
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.8
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.7
+          - distro: alpine
+            image_platform: linux/arm64/v8
+            conda_ver: 4.5.4
+            py_ver: 3.6
+          - distro: debian
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.9
+          - distro: debian
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.8
+          - distro: debian
+            image_platform: linux/arm64/v8
+            conda_ver: 4.10.3
+            py_ver: 3.7
+          - distro: debian
+            image_platform: linux/arm64/v8
             conda_ver: 4.5.4
             py_ver: 3.6
     env:
       DISTRO: ${{matrix.distro}}
+      IMAGE_PLATFORM: ${{matrix.image_platform}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
       DOCKER_USERNAME: ${{secrets.docker_username}}
       DOCKER_PASSWORD: ${{secrets.docker_password}}
     steps:
+      - uses: actions/checkout@v2
       - name: Fetch image artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+          name: ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,\
+              matrix.image_platform)}}
       - name: Publish image
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
-          IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
-          TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
+          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}-${IMAGE_PLATFORM}.tar.gz"
+          REF=$(eval "echo $(cat dist/${DISTRO}/docker-compose.yaml | grep 'image:' | \
+              awk '{print $2}')")
+          TAG=$(echo $REF | awk -F':' '{print $2}')
+          IMAGE=$(echo $REF | awk -F':' '{print $1}')
           docker push "${IMAGE}:${TAG}"
           docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
           docker push "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
