@@ -81,7 +81,7 @@ validate () {
 				python -c 'print(__import__("$TEST_MODULE_IMPORT").__file__)'
 			END
 			)" $LINENO
-	assert "conda install" "grep -q /opt/conda/lib/python.*/site-packages/ <<< \
+	assert "conda install" "grep -q /opt/conda/lib/python${PY_VER}/site-packages/ <<< \
 		$($SHELL_CMD 'eval "$(cat)"' <<-END | tail -1
 			conda install python==\$(python -V 2>&1 | awk '{print \$2}') \
 				$TEST_MODULE -y && \
@@ -111,7 +111,7 @@ validate () {
 	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} \
 		-v /tmp/requirements.txt:/tmp/conda_requirements.txt"
 	SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
-	assert "conda install" "grep -q /opt/conda/lib/python.*/site-packages/ <<< \
+	assert "conda install" "grep -q /opt/conda/lib/python${PY_VER}/site-packages/ <<< \
 		$($SHELL_CMD 'eval "$(cat)"' <<-END | tail -1
 			conda list | grep $TEST_MODULE && \
 			python -c 'print(__import__("$TEST_MODULE_IMPORT").__file__)'

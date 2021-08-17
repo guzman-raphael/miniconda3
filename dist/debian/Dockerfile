@@ -5,7 +5,7 @@ RUN cd / && go build startup.go
 
 FROM debian:9.12-slim as miniconda-build
 LABEL maintainerName="Raphael Guzman" \
-	maintainerEmail="raphael@vathes.com" \
+	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
@@ -76,23 +76,24 @@ COPY ./utilities/entrypoint.sh /entrypoint.sh
 COPY --from=go_tmp /startup /startup
 USER root
 RUN \
-  chmod +x /entrypoint.sh && \
-  chmod 4755 /startup
+	chmod +x /entrypoint.sh && \
+	chmod 4755 /startup
 USER anaconda:anaconda
 ENTRYPOINT ["/entrypoint.sh", "anaconda", "/home/anaconda"]
 WORKDIR /main
 VOLUME /tmp/.X11-unix
 CMD ["bash"]
 
-# #Squashed Final Image
+#Squashed Final Image
 FROM scratch
 COPY --from=miniconda-build / /
 # RUN chmod 4755 /startup && /startup -user=anaconda
 LABEL maintainerName="Raphael Guzman" \
-	maintainerEmail="raphael@vathes.com" \
+	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"
 USER anaconda:anaconda
 ENV PATH /opt/conda/bin:$PATH
+# check if this is necessary
 RUN conda clean -ya
 ENV HOME /home/anaconda
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8

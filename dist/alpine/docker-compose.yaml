@@ -1,6 +1,7 @@
 version: '2.4'
 services:
   app:
+    platform: ${IMAGE_PLATFORM}
     build:                                  # Uncomment to enable local build
       context: ../..
       dockerfile: dist/alpine/Dockerfile
