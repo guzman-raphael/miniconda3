@@ -84,9 +84,15 @@ jobs:
         run: |
           PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
           echo "PLATFORM_TAG=${PLATFORM_TAG}" >> $GITHUB_ENV
+      - name: debug1
+        run: |
+          docker buildx ls
       - uses: dbhi/qus/action@main
         with:
           targets: aarch64
+      - name: debug2
+        run: |
+          docker buildx ls
       - name: Compile image
         run: |
           docker buildx bake -f dist/${DISTRO}/docker-compose.yaml \
