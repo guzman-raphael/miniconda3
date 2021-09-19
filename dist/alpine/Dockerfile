@@ -1,4 +1,4 @@
-FROM alpine:3.11 as alpine-glibc
+FROM alpine:3 as alpine-glibc
 
 LABEL MAINTAINER="Vlad Frolov"
 LABEL SRC=https://github.com/frol/docker-alpine-glibc
@@ -134,7 +134,7 @@ RUN \
   chmod +x /entrypoint.sh && \
   chmod 4755 /startup
 USER anaconda:anaconda
-ENTRYPOINT ["/entrypoint.sh", "anaconda", "/home/anaconda"]
+ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /main
 VOLUME /tmp/.X11-unix
 CMD ["sh"]
@@ -154,7 +154,7 @@ ENV LANG C.UTF-8
 ENV APK_REQUIREMENTS /tmp/apk_requirements.txt
 ENV PIP_REQUIREMENTS /tmp/pip_requirements.txt
 ENV CONDA_REQUIREMENTS /tmp/conda_requirements.txt
-ENTRYPOINT ["/entrypoint.sh", "anaconda", "/home/anaconda"]
+ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /main
 VOLUME /tmp/.X11-unix
 CMD ["sh"]

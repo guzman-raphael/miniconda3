@@ -11,59 +11,96 @@ jobs:
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.9
+            platform: linux/amd64
             py_label: py39_
             conda_md5: 8c69f65a4ae27fb41df0fe552b4a8a3b
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.8
+            platform: linux/amd64
             py_label: py38_
             conda_md5: 14da4a9a44b337f7ccb8363537f65b9c
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.7
+            platform: linux/amd64
             py_label: py37_
             conda_md5: 9f186c1d86c266acc47dbc1603f0e2ed
           - distro: alpine
             conda_ver: 4.5.4
             py_ver: 3.6
+            platform: linux/amd64
             conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.9
+            platform: linux/amd64
             py_label: py39_
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.8
+            platform: linux/amd64
             py_label: py38_
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.7
+            platform: linux/amd64
             py_label: py37_
           - distro: debian
             conda_ver: 4.5.4
             py_ver: 3.6
+            platform: linux/amd64
+          - distro: debian
+            conda_ver: 4.10.3
+            py_ver: 3.9
+            platform: linux/arm64
+            py_label: py39_
+          - distro: debian
+            conda_ver: 4.10.3
+            py_ver: 3.8
+            platform: linux/arm64
+            py_label: py38_
+          - distro: debian
+            conda_ver: 4.10.3
+            py_ver: 3.7
+            platform: linux/arm64
+            py_label: py37_
+          - distro: debian
+            conda_ver: 4.5.4
+            py_ver: 3.6
+            platform: linux/arm64
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
+      PLATFORM: ${{matrix.platform}}
       PY_LABEL: ${{matrix.py_label}}
       CONDA_MD5: ${{matrix.conda_md5}}
       DOCKER_CLIENT_TIMEOUT: "120"
       COMPOSE_HTTP_TIMEOUT: "120"
     steps:
       - uses: actions/checkout@v2
+      - name: Determine platform tag
+        run: |
+          PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
+          echo "PLATFORM_TAG=${PLATFORM_TAG}" >> $GITHUB_ENV
       - name: Compile image
         run: |
-          docker-compose -f dist/${DISTRO}/docker-compose.yaml build
-          IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
-          TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
-          docker save "${IMAGE}:${TAG}" | gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
+          docker buildx bake -f dist/${DISTRO}/docker-compose.yaml \
+              --set *.platform=${PLATFORM} --set *.context=. --load
+          REF=$(eval "echo $(cat dist/${DISTRO}/docker-compose.yaml | grep 'image:' | \
+              awk '{print $2}')")
+          docker save "${REF}" | \
+              gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}-${PLATFORM_TAG}.tar.gz"
       - name: Add image artifact
         uses: actions/upload-artifact@v2
         with:
-          name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+          name: >
+            ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
+                      env.PLATFORM_TAG)}}
           path: >
-            ${{format('{0}-py{1}-{2}.tar.gz', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+            ${{format('{0}-py{1}-{2}-{3}.tar.gz', matrix.conda_ver, matrix.py_ver,
+                      matrix.distro, env.PLATFORM_TAG)}}
           retention-days: 1
   test:
     needs: build
@@ -74,50 +111,85 @@ jobs:
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.9
+            platform: linux/amd64
             package_manager: apk
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.8
+            platform: linux/amd64
             package_manager: apk
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.7
+            platform: linux/amd64
             package_manager: apk
           - distro: alpine
             conda_ver: 4.5.4
             py_ver: 3.6
+            platform: linux/amd64
             package_manager: apk
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.9
+            platform: linux/amd64
             package_manager: apt
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.8
+            platform: linux/amd64
             package_manager: apt
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.7
+            platform: linux/amd64
             package_manager: apt
           - distro: debian
             conda_ver: 4.5.4
             py_ver: 3.6
+            platform: linux/amd64
+            package_manager: apt
+          - distro: debian
+            conda_ver: 4.10.3
+            py_ver: 3.9
+            platform: linux/arm64
+            package_manager: apt
+          - distro: debian
+            conda_ver: 4.10.3
+            py_ver: 3.8
+            platform: linux/arm64
+            package_manager: apt
+          - distro: debian
+            conda_ver: 4.10.3
+            py_ver: 3.7
+            platform: linux/arm64
+            package_manager: apt
+          - distro: debian
+            conda_ver: 4.5.4
+            py_ver: 3.6
+            platform: linux/arm64
             package_manager: apt
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
+      PLATFORM: ${{matrix.platform}}
       PACKAGE_MANAGER: ${{matrix.package_manager}}
     steps:
       - uses: actions/checkout@v2
+      - name: Determine platform tag
+        run: |
+          PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
+          echo "PLATFORM_TAG=${PLATFORM_TAG}" >> $GITHUB_ENV
       - name: Fetch image artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+          name: >
+            ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
+                      env.PLATFORM_TAG)}}
       - name: Run integration tests
         run: |
           export HOST_UID=$(id -u)
-          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
+          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}-${PLATFORM_TAG}.tar.gz"
           tests/main.sh
   publish:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
@@ -129,44 +201,78 @@ jobs:
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.9
+            platform: linux/amd64
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.8
+            platform: linux/amd64
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.7
+            platform: linux/amd64
           - distro: alpine
             conda_ver: 4.5.4
             py_ver: 3.6
+            platform: linux/amd64
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.9
+            platform: linux/amd64
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.8
+            platform: linux/amd64
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.7
+            platform: linux/amd64
           - distro: debian
             conda_ver: 4.5.4
             py_ver: 3.6
+            platform: linux/amd64
+          - distro: debian
+            conda_ver: 4.10.3
+            py_ver: 3.9
+            platform: linux/arm64
+          - distro: debian
+            conda_ver: 4.10.3
+            py_ver: 3.8
+            platform: linux/arm64
+          - distro: debian
+            conda_ver: 4.10.3
+            py_ver: 3.7
+            platform: linux/arm64
+          - distro: debian
+            conda_ver: 4.5.4
+            py_ver: 3.6
+            platform: linux/arm64
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
+      PLATFORM: ${{matrix.platform}}
       DOCKER_USERNAME: ${{secrets.docker_username}}
       DOCKER_PASSWORD: ${{secrets.docker_password}}
     steps:
+      - uses: actions/checkout@v2
+      - name: Determine platform tag
+        run: |
+          PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
+          echo "PLATFORM_TAG=${PLATFORM_TAG}" >> $GITHUB_ENV
       - name: Fetch image artifact
         uses: actions/download-artifact@v2
         with:
-          name: ${{format('{0}-py{1}-{2}', matrix.conda_ver, matrix.py_ver, matrix.distro)}}
+          name: >
+            ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
+                      env.PLATFORM_TAG)}}
       - name: Publish image
         run: |
           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}.tar.gz"
-          IMAGE=$(docker images --filter "reference=datajoint/*" --format "{{.Repository}}")
-          TAG=$(docker images --filter "reference=datajoint/*" --format "{{.Tag}}")
+          docker load < "${CONDA_VER}-py${PY_VER}-${DISTRO}- ${PLATFORM_TAG}.tar.gz"
+          REF=$(eval "echo $(cat dist/${DISTRO}/docker-compose.yaml | grep 'image:' | \
+              awk '{print $2}')")
+          TAG=$(echo $REF | awk -F':' '{print $2}')
+          IMAGE=$(echo $REF | awk -F':' '{print $1}')
           docker push "${IMAGE}:${TAG}"
           docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
           docker push "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
@@ -178,7 +284,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Build docs
         uses: ammaraskar/sphinx-action@master
         with:

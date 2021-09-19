@@ -11,7 +11,7 @@ assert ()
 
 	lineno=$3
 	if ! eval "$2"; then
-		echo "Assertion failed:  \"$2\""
+		echo "Assertion ($1) failed:  \"$2\""
 		echo "File \"$0\", line $lineno"
 		exit $E_ASSERT_FAILED
 	else
@@ -61,6 +61,22 @@ validate () {
 								"en_US.UTF-8"))'
 	END
 	) == 'en_US.UTF-8' ]" $LINENO
+	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} -e NEW_USER=dja"
+	SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
+	assert "rename user utility" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
+		id -u -n
+	END
+	) == 'dja' ]" $LINENO
+	assert "home link utility" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
+		cd ~ && pwd
+	END
+	) == '/home/dja' ]" $LINENO
+	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} -e NEW_HOME=/home/.anaconda"
+	SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
+	assert "move home utility" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
+		readlink ~
+	END
+	) == '/home/.anaconda' ]" $LINENO
 	# # verify user installation modes
 	TEST_PACKAGE=curl
 	TEST_MODULE=beautifulsoup4
@@ -144,7 +160,7 @@ elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ]; then
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.6' ]; then
 	SIZE_LIMIT=228 #396
 fi
-SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.11" | bc)
+SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.12" | bc)
 # verify size minimal
 SIZE=$(docker images --filter "reference=$REF" --format "{{.Size}}" | awk -F'MB' '{print $1}')
 assert "minimal footprint" "(( $(echo "$SIZE <= $SIZE_LIMIT" | bc -l) ))" $LINENO

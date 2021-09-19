@@ -62,7 +62,7 @@ To rebuild and run tests locally, execute the following statements:
 
    set -a  # automatically export sourced variables
    . config/.env  # source config for build and tests
-   docker-compose -f dist/${DISTRO}/docker-compose.yaml build  # build image
+   docker buildx bake -f dist/${DISTRO}/docker-compose.yaml --set *.platform=${PLATFORM} --set *.context=. --load # build image
    tests/main.sh  # run tests
    set +a  # disable auto-export behavior for sourced variables
 

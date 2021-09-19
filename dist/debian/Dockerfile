@@ -3,7 +3,7 @@ FROM golang:alpine as go_tmp
 COPY ./utilities/startup.go /startup.go
 RUN cd / && go build startup.go
 
-FROM debian:9.12-slim as miniconda-build
+FROM debian:11-slim as miniconda-build
 LABEL maintainerName="Raphael Guzman" \
 	maintainerEmail="raphael@vathes.com" \
 	maintainerCompany="DataJoint"
@@ -37,7 +37,7 @@ RUN \
 	# 	libxrender1 git mercurial subversion && \
 	apt-get clean && \
 	wget --quiet $(echo "https://repo.anaconda.com/miniconda\
-		/Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-x86_64.sh" | \
+		/Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-$(uname -m).sh" | \
 		tr -d "\n" | tr -d "\t") -O ~/miniconda.sh && \
 	/bin/bash ~/miniconda.sh -b -p /opt/conda && \
 	rm ~/miniconda.sh && \
@@ -79,7 +79,7 @@ RUN \
   chmod +x /entrypoint.sh && \
   chmod 4755 /startup
 USER anaconda:anaconda
-ENTRYPOINT ["/entrypoint.sh", "anaconda", "/home/anaconda"]
+ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /main
 VOLUME /tmp/.X11-unix
 CMD ["bash"]
@@ -99,7 +99,7 @@ ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV APT_REQUIREMENTS /tmp/apt_requirements.txt
 ENV PIP_REQUIREMENTS /tmp/pip_requirements.txt
 ENV CONDA_REQUIREMENTS /tmp/conda_requirements.txt
-ENTRYPOINT ["/entrypoint.sh", "anaconda", "/home/anaconda"]
+ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /main
 VOLUME /tmp/.X11-unix
 CMD ["bash"]
