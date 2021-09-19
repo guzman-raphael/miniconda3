@@ -54,7 +54,7 @@ RUN cd / && go build startup.go
 FROM alpine-glibc as miniconda-build
 
 LABEL maintainerName="Raphael Guzman" \
-	maintainerEmail="raphael@vathes.com" \
+	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"
 ARG CONDA_VER
 ARG CONDA_MD5
@@ -131,8 +131,8 @@ COPY ./utilities/entrypoint.sh /entrypoint.sh
 COPY --from=go_tmp /startup /startup
 USER root
 RUN \
-  chmod +x /entrypoint.sh && \
-  chmod 4755 /startup
+	chmod +x /entrypoint.sh && \
+	chmod 4755 /startup
 USER anaconda:anaconda
 ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /main
@@ -142,12 +142,11 @@ CMD ["sh"]
 #Squashed Final Image
 FROM scratch
 COPY --from=miniconda-build / /
-# RUN chmod 4755 /startup && /startup -user=anaconda
 LABEL maintainerName="Raphael Guzman" \
-	maintainerEmail="raphael@vathes.com" \
+	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"
 USER anaconda:anaconda
-ENV PATH /opt/conda/bin:$PATH
+# ENV PATH /opt/conda/bin:$PATH
 ENV ENV "/home/anaconda/.ashrc"
 ENV HOME /home/anaconda
 ENV LANG C.UTF-8
