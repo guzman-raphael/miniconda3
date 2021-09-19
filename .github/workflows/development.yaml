@@ -87,9 +87,15 @@ jobs:
       - name: debug1
         run: |
           docker buildx ls
-      - uses: dbhi/qus/action@main
+      - name: Set up QEMU
+        id: qemu
+        uses: docker/setup-qemu-action@v1
         with:
-          targets: aarch64
+          image: tonistiigi/binfmt:latest
+          platforms: all
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
       - name: debug2
         run: |
           docker buildx ls
