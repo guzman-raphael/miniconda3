@@ -53,22 +53,18 @@ jobs:
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.9
-            platform: linux/arm64/v8
+            platform: linux/arm64
             py_label: py39_
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.8
-            platform: linux/arm64/v8
+            platform: linux/arm64
             py_label: py38_
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.7
-            platform: linux/arm64/v8
+            platform: linux/arm64
             py_label: py37_
-          # - distro: debian
-          #   conda_ver: 4.5.4
-          #   py_ver: 3.6
-          #   platform: linux/arm64/v8
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
@@ -84,9 +80,6 @@ jobs:
         run: |
           PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
           echo "PLATFORM_TAG=${PLATFORM_TAG}" >> $GITHUB_ENV
-      - name: debug1
-        run: |
-          docker buildx ls
       - uses: dbhi/qus/action@main
         with:
           targets: aarch64
@@ -99,9 +92,6 @@ jobs:
       # - name: Set up Docker Buildx
       #   id: buildx
       #   uses: docker/setup-buildx-action@v1
-      - name: debug2
-        run: |
-          docker buildx ls
       - name: Compile image
         run: |
           docker buildx bake -f dist/${DISTRO}/docker-compose.yaml \
@@ -169,23 +159,18 @@ jobs:
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.9
-            platform: linux/arm64/v8
+            platform: linux/arm64
             package_manager: apt
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.8
-            platform: linux/arm64/v8
+            platform: linux/arm64
             package_manager: apt
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.7
-            platform: linux/arm64/v8
+            platform: linux/arm64
             package_manager: apt
-          # - distro: debian
-          #   conda_ver: 4.5.4
-          #   py_ver: 3.6
-          #   platform: linux/arm64/v8
-          #   package_manager: apt
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
@@ -254,19 +239,15 @@ jobs:
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.9
-            platform: linux/arm64/v8
+            platform: linux/arm64
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.8
-            platform: linux/arm64/v8
+            platform: linux/arm64
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.7
-            platform: linux/arm64/v8
-          # - distro: debian
-          #   conda_ver: 4.5.4
-          #   py_ver: 3.6
-          #   platform: linux/arm64/v8
+            platform: linux/arm64
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
