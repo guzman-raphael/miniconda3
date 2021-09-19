@@ -163,6 +163,7 @@ fi
 SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.12" | bc)
 # verify size minimal
 SIZE=$(docker images --filter "reference=$REF" --format "{{.Size}}" | awk -F'MB' '{print $1}')
+echo $SIZE
 assert "minimal footprint" "(( $(echo "$SIZE <= $SIZE_LIMIT" | bc -l) ))" $LINENO
 # run tests
 SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
