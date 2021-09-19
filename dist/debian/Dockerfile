@@ -29,7 +29,7 @@ RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	# Current latest Miniconda3 release
 	apt-get update --fix-missing && \
-	apt-get install -y wget bzip2 && \
+	apt-get install -y wget bzip2 apt-utils && \
 	# Add locale config (not related to miniconda3)
 	apt-get install locales -y && \
 	localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 && \
