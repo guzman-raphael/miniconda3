@@ -44,6 +44,8 @@ Features
   - Pip dependencies: Create a ``\n`` delimited file containing the pip dependencies at ``/tmp/pip_requirements.txt``. This can be created manually within container/image or mounted in.
 
 - When mounting volumes (avoid mounting files with ``root`` permissions only!), accessing files within image via ``anaconda:anaconda`` can result in permission denied errors. To avoid this, simply add a ``user`` spec in ``docker-compose.yaml`` with the appropriate ``HOST_UID`` e.g. ``user: 1000:anaconda``. Running ``/entrypoint.sh`` will then trigger a reassociation of ``anaconda``'s UID to allow permissions to access mounted files. Note that ``entrypoint.sh`` is automatically invoked when starting containers. If you are utilizing the included reference ``docker-compose.yaml`` files, you may simply set the ``HOST_UID`` environment value when building or starting the container.
+- Allows user `anaconda` to be renamed by setting environment variable `NEW_USER` before launching container.
+- Allows user's `HOME` directory to be moved to a new directory based on setting environment variable `NEW_HOME` before launching container. Behavior is that it will move the directory but also create a symbolic link from `/home/${USER}` to the new `HOME` for convenience.
 - Applies image compresssion.
 
 Usage Notes
