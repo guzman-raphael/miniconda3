@@ -137,7 +137,8 @@ validate () {
 	rm /tmp/requirements.txt
 }
 # set image context
-REF=$(eval "echo $(cat dist/${DISTRO}/docker-compose.yaml | grep 'image:' | awk '{print $2}')")
+REF=$(eval "echo $(cat dist/${DISTRO}/docker-compose.yaml | grep 'image:' | \
+	awk '{print $2}')")
 TAG=$(echo $REF | awk -F':' '{print $2}')
 IMAGE=$(echo $REF | awk -F':' '{print $1}')
 SHELL_CMD_TEMPLATE="docker run --rm -i \$SHELL_CMD_FLAGS $REF \

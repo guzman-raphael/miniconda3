@@ -87,7 +87,6 @@ CMD ["bash"]
 # Squashed Final Image
 FROM scratch
 COPY --from=miniconda-build / /
-# RUN chmod 4755 /startup && /startup -user=anaconda
 LABEL maintainerName="Raphael Guzman" \
 	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"

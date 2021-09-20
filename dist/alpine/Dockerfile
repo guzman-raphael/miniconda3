@@ -46,7 +46,7 @@ RUN eval $'set -e\n\
 		"$ALPINE_GLIBC_BIN_PACKAGE_FILENAME"\
 		"$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"\n\
 	'
-#Temp Image to create exec to allow UID/GID to be updated on boot
+# Temp Image to create exec to allow UID/GID to be updated on boot
 FROM golang:alpine as go_tmp
 COPY ./utilities/startup.go /startup.go
 RUN cd / && go build startup.go
@@ -139,7 +139,7 @@ WORKDIR /main
 VOLUME /tmp/.X11-unix
 CMD ["sh"]
 
-#Squashed Final Image
+# Squashed Final Image
 FROM scratch
 COPY --from=miniconda-build / /
 LABEL maintainerName="Raphael Guzman" \

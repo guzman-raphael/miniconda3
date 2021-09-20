@@ -59,7 +59,8 @@ func main() {
 		new_record := []string{*new_user, "x", *new_uid, *new_gid, record[4],
 				       *new_home, record[6]}
 		pass_str = strings.Replace(
-			pass_str, strings.Join(record, ":"), strings.Join(new_record, ":"), -1)
+			pass_str, strings.Join(record, ":"), strings.Join(new_record, ":"),
+			-1)
 		pass_file, _ := os.Create("/etc/passwd")
 		pass_file.WriteString(pass_str)
 		pass_file.Close()
