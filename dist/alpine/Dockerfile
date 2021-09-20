@@ -146,6 +146,8 @@ LABEL maintainerName="Raphael Guzman" \
 	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"
 USER anaconda:anaconda
+# Add conda to path here for use dockerfiles downstream
+ENV PATH /opt/conda/bin:$PATH
 ENV ENV "/home/anaconda/.ashrc"
 ENV HOME /home/anaconda
 ENV LANG C.UTF-8
