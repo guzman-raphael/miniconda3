@@ -41,8 +41,15 @@ func main() {
 		uid_int, _ := strconv.Atoi(*new_uid)
 		gid_int, _ := strconv.Atoi(*new_gid)
 		// Rename home dir
-		if &home != new_home {
-			exec.Command("mv", home, *new_home).CombinedOutput()
+		if home != *new_home {
+			cmd0 := exec.Command("mv", home, *new_home)
+			cmd0.SysProcAttr = &syscall.SysProcAttr{}
+			cmd0.SysProcAttr.Credential = &syscall.Credential{Uid: 0, Gid: 0}
+			output0, err0 := cmd0.CombinedOutput()
+			if err0 != nil {
+				println(err0.Error() + ": " + string(output0))
+				return
+			}
 		}
 		// Add symlink if new user
 		if user != new_user {
@@ -52,7 +59,8 @@ func main() {
 		new_record := []string{*new_user, "x", *new_uid, *new_gid, record[4],
 				       *new_home, record[6]}
 		pass_str = strings.Replace(
-			pass_str, strings.Join(record, ":"), strings.Join(new_record, ":"), -1)
+			pass_str, strings.Join(record, ":"), strings.Join(new_record, ":"),
+			-1)
 		pass_file, _ := os.Create("/etc/passwd")
 		pass_file.WriteString(pass_str)
 		pass_file.Close()
@@ -69,6 +77,13 @@ func main() {
 	}
 	// Install alpine packages
 	if _, err := os.Stat(os.Getenv("APK_REQUIREMENTS")); err == nil {
+		cmd0 := exec.Command("apk", "update")
+		_, err0 := cmd0.CombinedOutput()
+		if err0 != nil {
+			println("System update error!")
+			println(err0.Error())
+			return
+		}
 		cmd1 := exec.Command("paste", "-s", "-d", ",", os.Getenv("APK_REQUIREMENTS"))
 		output1, err1 := cmd1.CombinedOutput()
 		if err1 != nil {
@@ -91,6 +106,13 @@ func main() {
 	}
 	// Install debian packages
 	if _, err := os.Stat(os.Getenv("APT_REQUIREMENTS")); err == nil {
+		cmd0 := exec.Command("apt-get", "update")
+		_, err0 := cmd0.CombinedOutput()
+		if err0 != nil {
+			println("System update error!")
+			println(err0.Error())
+			return
+		}
 		cmd1 := exec.Command("paste", "-s", "-d", ",", os.Getenv("APT_REQUIREMENTS"))
 		output1, err1 := cmd1.CombinedOutput()
 		if err1 != nil {

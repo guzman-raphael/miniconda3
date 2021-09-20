@@ -11,7 +11,7 @@ assert ()
 
 	lineno=$3
 	if ! eval "$2"; then
-		echo "Assertion failed:  \"$2\""
+		echo "Assertion ($1) failed:  \"$2\""
 		echo "File \"$0\", line $lineno"
 		exit $E_ASSERT_FAILED
 	else
@@ -61,6 +61,22 @@ validate () {
 								"en_US.UTF-8"))'
 	END
 	) == 'en_US.UTF-8' ]" $LINENO
+	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} -e NEW_USER=dja"
+	SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
+	assert "rename user utility" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
+		id -u -n
+	END
+	) == 'dja' ]" $LINENO
+	assert "home link utility" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
+		cd ~ && pwd
+	END
+	) == '/home/dja' ]" $LINENO
+	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} -e NEW_HOME=/home/.anaconda"
+	SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
+	assert "move home utility" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
+		readlink ~
+	END
+	) == '/home/.anaconda' ]" $LINENO
 	# # verify user installation modes
 	TEST_PACKAGE=curl
 	TEST_MODULE=beautifulsoup4
@@ -81,7 +97,7 @@ validate () {
 				python -c 'print(__import__("$TEST_MODULE_IMPORT").__file__)'
 			END
 			)" $LINENO
-	assert "conda install" "grep -q /opt/conda/lib/python.*/site-packages/ <<< \
+	assert "conda install" "grep -q /opt/conda/lib/python${PY_VER}/site-packages/ <<< \
 		$($SHELL_CMD 'eval "$(cat)"' <<-END | tail -1
 			conda install python==\$(python -V 2>&1 | awk '{print \$2}') \
 				$TEST_MODULE -y && \
@@ -111,7 +127,7 @@ validate () {
 	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} \
 		-v /tmp/requirements.txt:/tmp/conda_requirements.txt"
 	SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
-	assert "conda install" "grep -q /opt/conda/lib/python.*/site-packages/ <<< \
+	assert "conda install" "grep -q /opt/conda/lib/python${PY_VER}/site-packages/ <<< \
 		$($SHELL_CMD 'eval "$(cat)"' <<-END | tail -1
 			conda list | grep $TEST_MODULE && \
 			python -c 'print(__import__("$TEST_MODULE_IMPORT").__file__)'
@@ -121,30 +137,37 @@ validate () {
 	rm /tmp/requirements.txt
 }
 # set image context
-REF=$(eval "echo $(cat dist/${DISTRO}/docker-compose.yaml | grep 'image:' | awk '{print $2}')")
+REF=$(eval "echo $(cat dist/${DISTRO}/docker-compose.yaml | grep 'image:' | \
+	awk '{print $2}')")
 TAG=$(echo $REF | awk -F':' '{print $2}')
 IMAGE=$(echo $REF | awk -F':' '{print $1}')
 SHELL_CMD_TEMPLATE="docker run --rm -i \$SHELL_CMD_FLAGS $REF \
 	$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}') -c"
 # determine reference size
-if [ $DISTRO == alpine ] && [ $PY_VER == '3.9' ]; then
+if [ $DISTRO == alpine ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=240
-elif [ $DISTRO == alpine ] && [ $PY_VER == '3.8' ]; then
+elif [ $DISTRO == alpine ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=188
-elif [ $DISTRO == alpine ] && [ $PY_VER == '3.7' ]; then
+elif [ $DISTRO == alpine ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=196
-elif [ $DISTRO == alpine ] && [ $PY_VER == '3.6' ]; then
+elif [ $DISTRO == alpine ] && [ $PY_VER == '3.6' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=155
-elif [ $DISTRO == debian ] && [ $PY_VER == '3.9' ]; then
+elif [ $DISTRO == debian ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=311 #481
-elif [ $DISTRO == debian ] && [ $PY_VER == '3.8' ]; then
+elif [ $DISTRO == debian ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=265 #428
-elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ]; then
+elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=269 #437
-elif [ $DISTRO == debian ] && [ $PY_VER == '3.6' ]; then
+elif [ $DISTRO == debian ] && [ $PY_VER == '3.6' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=228 #396
+elif [ $DISTRO == debian ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/arm64' ]; then
+	SIZE_LIMIT=505
+elif [ $DISTRO == debian ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/arm64' ]; then
+	SIZE_LIMIT=450
+elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/arm64' ]; then
+	SIZE_LIMIT=460
 fi
-SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.11" | bc)
+SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.17" | bc)
 # verify size minimal
 SIZE=$(docker images --filter "reference=$REF" --format "{{.Size}}" | awk -F'MB' '{print $1}')
 assert "minimal footprint" "(( $(echo "$SIZE <= $SIZE_LIMIT" | bc -l) ))" $LINENO

@@ -1,4 +1,4 @@
-FROM alpine:3.11 as alpine-glibc
+FROM alpine:3 as alpine-glibc
 
 LABEL MAINTAINER="Vlad Frolov"
 LABEL SRC=https://github.com/frol/docker-alpine-glibc
@@ -46,7 +46,7 @@ RUN eval $'set -e\n\
 		"$ALPINE_GLIBC_BIN_PACKAGE_FILENAME"\
 		"$ALPINE_GLIBC_I18N_PACKAGE_FILENAME"\n\
 	'
-#Temp Image to create exec to allow UID/GID to be updated on boot
+# Temp Image to create exec to allow UID/GID to be updated on boot
 FROM golang:alpine as go_tmp
 COPY ./utilities/startup.go /startup.go
 RUN cd / && go build startup.go
@@ -54,7 +54,7 @@ RUN cd / && go build startup.go
 FROM alpine-glibc as miniconda-build
 
 LABEL maintainerName="Raphael Guzman" \
-	maintainerEmail="raphael@vathes.com" \
+	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"
 ARG CONDA_VER
 ARG CONDA_MD5
@@ -131,30 +131,28 @@ COPY ./utilities/entrypoint.sh /entrypoint.sh
 COPY --from=go_tmp /startup /startup
 USER root
 RUN \
-  chmod +x /entrypoint.sh && \
-  chmod 4755 /startup
+	chmod +x /entrypoint.sh && \
+	chmod 4755 /startup
 USER anaconda:anaconda
-ENTRYPOINT ["/entrypoint.sh", "anaconda", "/home/anaconda"]
+ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /main
 VOLUME /tmp/.X11-unix
 CMD ["sh"]
 
-#Squashed Final Image
+# Squashed Final Image
 FROM scratch
 COPY --from=miniconda-build / /
-# RUN chmod 4755 /startup && /startup -user=anaconda
 LABEL maintainerName="Raphael Guzman" \
-	maintainerEmail="raphael@vathes.com" \
+	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"
 USER anaconda:anaconda
-ENV PATH /opt/conda/bin:$PATH
 ENV ENV "/home/anaconda/.ashrc"
 ENV HOME /home/anaconda
 ENV LANG C.UTF-8
 ENV APK_REQUIREMENTS /tmp/apk_requirements.txt
 ENV PIP_REQUIREMENTS /tmp/pip_requirements.txt
 ENV CONDA_REQUIREMENTS /tmp/conda_requirements.txt
-ENTRYPOINT ["/entrypoint.sh", "anaconda", "/home/anaconda"]
+ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /main
 VOLUME /tmp/.X11-unix
 CMD ["sh"]
