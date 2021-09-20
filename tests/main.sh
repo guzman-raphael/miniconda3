@@ -160,7 +160,7 @@ elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ]; then
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.6' ]; then
 	SIZE_LIMIT=228 #396
 fi
-SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.12" | bc)
+SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.17" | bc)
 # verify size minimal
 SIZE=$(docker images --filter "reference=$REF" --format "{{.Size}}" | awk -F'MB' '{print $1}')
 echo $SIZE
