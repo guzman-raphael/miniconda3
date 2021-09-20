@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -e
 # Source shell intercept
 . $(ls -a ${HOME}/.*ashrc)
 # Verify not root
@@ -18,4 +18,5 @@ if ! [ $(id -u) = 0 ]; then
 	fi
 fi
 # Run command
+[ "$(pwd)" != "/home/anaconda" ] || cd ~
 "$@"

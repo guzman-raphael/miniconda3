@@ -78,17 +78,17 @@ func main() {
 	// Install alpine packages
 	if _, err := os.Stat(os.Getenv("APK_REQUIREMENTS")); err == nil {
 		cmd0 := exec.Command("apk", "update")
-		_, err0 := cmd0.CombinedOutput()
+		output0, err0 := cmd0.CombinedOutput()
 		if err0 != nil {
 			println("System update error!")
-			println(err0.Error())
+			println(err0.Error() + ": " + string(output0))
 			return
 		}
 		cmd1 := exec.Command("paste", "-s", "-d", ",", os.Getenv("APK_REQUIREMENTS"))
 		output1, err1 := cmd1.CombinedOutput()
 		if err1 != nil {
 			println("System requirements read error!")
-			println(err1.Error())
+			println(err1.Error() + ": " + string(output1))
 			return
 		}
 		args := []string{"add", "--no-cache"}
@@ -97,27 +97,27 @@ func main() {
 		cmd2 := exec.Command("apk", args...)
 		cmd2.SysProcAttr = &syscall.SysProcAttr{}
 		cmd2.SysProcAttr.Credential = &syscall.Credential{Uid: 0, Gid: 0}
-		_, err2 := cmd2.CombinedOutput()
+		output2, err2 := cmd2.CombinedOutput()
 		if err2 != nil {
 			println("System requirements install error!")
-			println(err2.Error())
+			println(err2.Error() + ": " + string(output2))
 			return
 		}
 	}
 	// Install debian packages
 	if _, err := os.Stat(os.Getenv("APT_REQUIREMENTS")); err == nil {
 		cmd0 := exec.Command("apt-get", "update")
-		_, err0 := cmd0.CombinedOutput()
+		output0, err0 := cmd0.CombinedOutput()
 		if err0 != nil {
 			println("System update error!")
-			println(err0.Error())
+			println(err0.Error() + ": " + string(output0))
 			return
 		}
 		cmd1 := exec.Command("paste", "-s", "-d", ",", os.Getenv("APT_REQUIREMENTS"))
 		output1, err1 := cmd1.CombinedOutput()
 		if err1 != nil {
 			println("System requirements read error!")
-			println(err1.Error())
+			println(err1.Error() + ": " + string(output1))
 			return
 		}
 		args := []string{"install"}
@@ -126,19 +126,19 @@ func main() {
 		cmd2 := exec.Command("apt", args...)
 		cmd2.SysProcAttr = &syscall.SysProcAttr{}
 		cmd2.SysProcAttr.Credential = &syscall.Credential{Uid: 0, Gid: 0}
-		_, err2 := cmd2.CombinedOutput()
+		output2, err2 := cmd2.CombinedOutput()
 		if err2 != nil {
 			println("System requirements install error!")
-			println(err2.Error())
+			println(err2.Error() + ": " + string(output2))
 			return
 		}
 		cmd3 := exec.Command("apt-get", "clean")
 		cmd3.SysProcAttr = &syscall.SysProcAttr{}
 		cmd3.SysProcAttr.Credential = &syscall.Credential{Uid: 0, Gid: 0}
-		_, err3 := cmd3.CombinedOutput()
+		output3, err3 := cmd3.CombinedOutput()
 		if err3 != nil {
 			println("System requirements clean error!")
-			println(err3.Error())
+			println(err3.Error() + ": " + string(output3))
 			return
 		}
 	}
