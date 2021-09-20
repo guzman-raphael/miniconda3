@@ -38,6 +38,10 @@
 </div>
 <div class="toctree-wrapper compound">
 </div>
+<div class="section" id="image-hierarchy">
+<h2>Image Hierarchy<a class="headerlink" href="#image-hierarchy" title="Permalink to this headline">¶</a></h2>
+<img alt="_images/image_hierarchy.png" src="_images/image_hierarchy.png" />
+</div>
 <div class="section" id="launch-locally">
 <h2>Launch Locally<a class="headerlink" href="#launch-locally" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="debian">
@@ -70,6 +74,8 @@
 </ul>
 </li>
 <li><p>When mounting volumes (avoid mounting files with <code class="docutils literal notranslate"><span class="pre">root</span></code> permissions only!), accessing files within image via <code class="docutils literal notranslate"><span class="pre">anaconda:anaconda</span></code> can result in permission denied errors. To avoid this, simply add a <code class="docutils literal notranslate"><span class="pre">user</span></code> spec in <code class="docutils literal notranslate"><span class="pre">docker-compose.yaml</span></code> with the appropriate <code class="docutils literal notranslate"><span class="pre">HOST_UID</span></code> e.g. <code class="docutils literal notranslate"><span class="pre">user:</span> <span class="pre">1000:anaconda</span></code>. Running <code class="docutils literal notranslate"><span class="pre">/entrypoint.sh</span></code> will then trigger a reassociation of <code class="docutils literal notranslate"><span class="pre">anaconda</span></code>’s UID to allow permissions to access mounted files. Note that <code class="docutils literal notranslate"><span class="pre">entrypoint.sh</span></code> is automatically invoked when starting containers. If you are utilizing the included reference <code class="docutils literal notranslate"><span class="pre">docker-compose.yaml</span></code> files, you may simply set the <code class="docutils literal notranslate"><span class="pre">HOST_UID</span></code> environment value when building or starting the container.</p></li>
+<li><p>Allows user <cite>anaconda</cite> to be renamed by setting environment variable <cite>NEW_USER</cite> before launching container.</p></li>
+<li><p>Allows user’s <cite>HOME</cite> directory to be moved to a new directory based on setting environment variable <cite>NEW_HOME</cite> before launching container. Behavior is that it will move the directory but also create a symbolic link from <cite>/home/${USER}</cite> to the new <cite>HOME</cite> for convenience.</p></li>
 <li><p>Applies image compresssion.</p></li>
 </ul>
 </div>
@@ -90,7 +96,7 @@
 <p>To rebuild and run tests locally, execute the following statements:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span> -a  <span class="c1"># automatically export sourced variables</span>
 . config/.env  <span class="c1"># source config for build and tests</span>
-docker-compose -f dist/<span class="si">${</span><span class="nv">DISTRO</span><span class="si">}</span>/docker-compose.yaml build  <span class="c1"># build image</span>
+docker buildx bake -f dist/<span class="si">${</span><span class="nv">DISTRO</span><span class="si">}</span>/docker-compose.yaml --set *.platform<span class="o">=</span><span class="si">${</span><span class="nv">PLATFORM</span><span class="si">}</span> --set *.context<span class="o">=</span>. --load <span class="c1"># build image</span>
 tests/main.sh  <span class="c1"># run tests</span>
 <span class="nb">set</span> +a  <span class="c1"># disable auto-export behavior for sourced variables</span>
 </pre></div>
@@ -127,6 +133,7 @@ tests/main.sh  <span class="c1"># run tests</span>
   <h3><a href="#">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Documentation for the DataJoint’s Miniconda3 Image</a><ul>
+<li><a class="reference internal" href="#image-hierarchy">Image Hierarchy</a></li>
 <li><a class="reference internal" href="#launch-locally">Launch Locally</a><ul>
 <li><a class="reference internal" href="#debian">Debian</a></li>
 <li><a class="reference internal" href="#alpine">Alpine</a></li>
