@@ -18,5 +18,5 @@ if ! [ $(id -u) = 0 ]; then
 	fi
 fi
 # Run command
-[ "$(pwd)" != '/home/anaconda' ] || cd ~
+[ "$(pwd)" != "/home/anaconda" ] || cd ~
 "$@"
