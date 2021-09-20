@@ -92,7 +92,6 @@ LABEL maintainerName="Raphael Guzman" \
 	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"
 USER anaconda:anaconda
-# ENV PATH /opt/conda/bin:$PATH
 ENV HOME /home/anaconda
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 ENV APT_REQUIREMENTS /tmp/apt_requirements.txt

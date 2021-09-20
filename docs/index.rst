@@ -8,6 +8,11 @@ Documentation for the DataJoint's Miniconda3 Image
    :maxdepth: 2
    :caption: Contents:
 
+Image Hierarchy
+***************
+
+.. image:: image_hierarchy.png
+
 Launch Locally
 **************
 
