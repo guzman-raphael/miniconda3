@@ -50,21 +50,21 @@ jobs:
             conda_ver: 4.5.4
             py_ver: 3.6
             platform: linux/amd64
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.9
-            platform: linux/arm64
-            py_label: py39_
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.8
-            platform: linux/arm64
-            py_label: py38_
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.7
-            platform: linux/arm64
-            py_label: py37_
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.9
+          #   platform: linux/arm64
+          #   py_label: py39_
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.8
+          #   platform: linux/arm64
+          #   py_label: py38_
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.7
+          #   platform: linux/arm64
+          #   py_label: py37_
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
@@ -156,21 +156,21 @@ jobs:
             py_ver: 3.6
             platform: linux/amd64
             package_manager: apt
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.9
-            platform: linux/arm64
-            package_manager: apt
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.8
-            platform: linux/arm64
-            package_manager: apt
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.7
-            platform: linux/arm64
-            package_manager: apt
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.9
+          #   platform: linux/arm64
+          #   package_manager: apt
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.8
+          #   platform: linux/arm64
+          #   package_manager: apt
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.7
+          #   platform: linux/arm64
+          #   package_manager: apt
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
@@ -236,18 +236,18 @@ jobs:
             conda_ver: 4.5.4
             py_ver: 3.6
             platform: linux/amd64
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.9
-            platform: linux/arm64
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.8
-            platform: linux/arm64
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.7
-            platform: linux/arm64
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.9
+          #   platform: linux/arm64
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.8
+          #   platform: linux/arm64
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.7
+          #   platform: linux/arm64
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
