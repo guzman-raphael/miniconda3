@@ -1,5 +1,5 @@
 #!/bin/sh
-
+set -e
 # Customize shell prompt
 export PS1="\[\e[32;1m\]\u\[\e[m\]@\[\e[34;1m\]\H\[\e[m\]:\[\e[33;1m\]\w\[\e[m\]$ "
 # Set default permission of new files to allow group access
@@ -21,7 +21,10 @@ if ! [ $(id -u) = 0 ]; then
 		NEW_HOME=$ORIG_HOME
 	fi
 	# Fix UID/GID (for permissions), rename user, and rename home as appropriate
+	CURR_DIR=$(pwd) # this is necessary to prevent collisions if standing in directory
+	cd /tmp
 	/startup -user=$ORIG_USER -new_uid=$(id -u) -new_gid=$(id -g) -new_user=${NEW_USER} -new_home=$NEW_HOME
 	export HOME=/home/${NEW_USER}
+	cd $CURR_DIR 2>/dev/null || cd $HOME
 fi
 export PATH=$(readlink -f "$HOME")/.local/bin:$PATH

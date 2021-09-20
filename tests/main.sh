@@ -21,7 +21,7 @@ assert ()
 }
 validate () {
 	SHELL_CMD_FLAGS_ORIG=$SHELL_CMD_FLAGS
-	# verify proper versions
+	# Verify proper versions
 	assert "conda version" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
 		conda -V | awk '{print \$2}'
 	END
@@ -31,7 +31,7 @@ validate () {
 	END
 	)" $LINENO
 	assert "os version" "$SHELL_CMD 'cat /etc/issue' | grep -qi ${DISTRO}" $LINENO
-	# # verify user environment
+	# Verify user environment
 	assert "username" "[ $($SHELL_CMD "id -u -n") == anaconda ]" $LINENO
 	assert "default group" "[ $($SHELL_CMD "id -g -n") == anaconda ]" $LINENO
 	assert "home" "[ $($SHELL_CMD "cd ~ && pwd") == '/home/anaconda' ]" $LINENO
@@ -71,13 +71,29 @@ validate () {
 		cd ~ && pwd
 	END
 	) == '/home/dja' ]" $LINENO
-	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} -e NEW_HOME=/home/.anaconda"
+	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} -e NEW_HOME=/home/.anaconda \
+		--workdir /home/anaconda"
 	SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
-	assert "move home utility" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
-		readlink ~
+	assert "move home utility" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END | tail -1
+		pip --version && readlink ~
 	END
 	) == '/home/.anaconda' ]" $LINENO
-	# # verify user installation modes
+	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} -e NEW_USER=dja --workdir /home/anaconda"
+	SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
+	assert "shell into proper home (change user)" \
+		"[ $($SHELL_CMD 'eval "$(cat)"' <<-END | tail -1
+			pwd
+		END
+		) == '/home/dja' ]" $LINENO
+	SHELL_CMD_FLAGS="${SHELL_CMD_FLAGS_ORIG} -e NEW_HOME=/home/.anaconda \
+		-e NEW_USER=dja --workdir /home/anaconda"
+	SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
+	assert "shell into proper home (change user+home)" \
+		"[ $($SHELL_CMD 'eval "$(cat)"' <<-END | tail -1
+			pwd
+		END
+		) == '/home/dja' ]" $LINENO
+	# Verify user installation modes
 	TEST_PACKAGE=curl
 	TEST_MODULE=beautifulsoup4
 	TEST_MODULE_IMPORT=bs4
@@ -90,7 +106,7 @@ validate () {
 		END
 		)" $LINENO
 	assert "pip user install" "grep -q \
-		/home/anaconda/.local/lib/python${PY_VER}/site-packages/ <<< \
+		/home/dja/.local/lib/python${PY_VER}/site-packages/ <<< \
 			$($SHELL_CMD 'eval "$(cat)"' <<-END | tail -1
 				pip install --force-reinstall --user $TEST_MODULE && \
 				pip freeze | grep $TEST_MODULE && \
@@ -136,14 +152,14 @@ validate () {
 
 	rm /tmp/requirements.txt
 }
-# set image context
+# Set image context
 REF=$(eval "echo $(cat dist/${DISTRO}/docker-compose.yaml | grep 'image:' | \
 	awk '{print $2}')")
 TAG=$(echo $REF | awk -F':' '{print $2}')
 IMAGE=$(echo $REF | awk -F':' '{print $1}')
 SHELL_CMD_TEMPLATE="docker run --rm -i \$SHELL_CMD_FLAGS $REF \
 	$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}') -c"
-# determine reference size
+# Determine reference size
 if [ $DISTRO == alpine ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=240
 elif [ $DISTRO == alpine ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/amd64' ]; then
@@ -168,10 +184,10 @@ elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/arm6
 	SIZE_LIMIT=460
 fi
 SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.17" | bc)
-# verify size minimal
+# Verify size minimal
 SIZE=$(docker images --filter "reference=$REF" --format "{{.Size}}" | awk -F'MB' '{print $1}')
 assert "minimal footprint" "(( $(echo "$SIZE <= $SIZE_LIMIT" | bc -l) ))" $LINENO
-# run tests
+# Run tests
 SHELL_CMD=$(eval "echo \"$SHELL_CMD_TEMPLATE\"")
 validate
 
