@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 # Customize shell prompt
 export PS1="\[\e[32;1m\]\u\[\e[m\]@\[\e[34;1m\]\H\[\e[m\]:\[\e[33;1m\]\w\[\e[m\]$ "
 # Set default permission of new files to allow group access

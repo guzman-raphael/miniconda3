@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 # Source shell intercept
 . $(ls -a ${HOME}/.*ashrc)
 # Verify not root
