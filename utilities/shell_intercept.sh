@@ -23,6 +23,6 @@ if ! [ $(id -u) = 0 ]; then
 	cd /tmp
 	/startup -user=$ORIG_USER -new_uid=$(id -u) -new_gid=$(id -g) -new_user=${NEW_USER} -new_home=$NEW_HOME
 	export HOME=/home/${NEW_USER}
-	cd $CURR_DIR 2>/dev/null || cd $HOME
+	echo $CURR_DIR | grep -qvE "^\/home\/\.?anaconda$" && cd $CURR_DIR || cd ~
 fi
 export PATH=$(readlink -f "$HOME")/.local/bin:$PATH
