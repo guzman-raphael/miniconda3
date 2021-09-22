@@ -10,14 +10,13 @@ conda activate
 if ! [ $(id -u) = 0 ]; then
 	# Default to the anaconda user
 	ORIG_USER=anaconda
-	ORIG_HOME=/home/anaconda
 	# Detect if renaming user
 	if [ -z "$NEW_USER" ]; then
 		NEW_USER=$ORIG_USER
 	fi
 	# Detect if 'moving' home dir
 	if [ -z "$NEW_HOME" ]; then
-		NEW_HOME=$ORIG_HOME
+		NEW_HOME=$HOME
 	fi
 	# Fix UID/GID (for permissions), rename user, and rename home as appropriate
 	CURR_DIR=$(pwd) # this is necessary to prevent collisions if standing in directory
