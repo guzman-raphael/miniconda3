@@ -17,5 +17,4 @@ if ! [ $(id -u) = 0 ]; then
 	fi
 fi
 # Run command
-pwd | grep -qvE "^\/home\/\.?anaconda$" || cd ~
 "$@"
