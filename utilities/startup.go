@@ -78,6 +78,8 @@ func main() {
 	// Install alpine packages
 	if _, err := os.Stat(os.Getenv("APK_REQUIREMENTS")); err == nil {
 		cmd0 := exec.Command("apk", "update")
+		cmd0.SysProcAttr = &syscall.SysProcAttr{}
+		cmd0.SysProcAttr.Credential = &syscall.Credential{Uid: 0, Gid: 0}
 		output0, err0 := cmd0.CombinedOutput()
 		if err0 != nil {
 			println("System update error!")
@@ -107,6 +109,8 @@ func main() {
 	// Install debian packages
 	if _, err := os.Stat(os.Getenv("APT_REQUIREMENTS")); err == nil {
 		cmd0 := exec.Command("apt-get", "update")
+		cmd0.SysProcAttr = &syscall.SysProcAttr{}
+		cmd0.SysProcAttr.Credential = &syscall.Credential{Uid: 0, Gid: 0}
 		output0, err0 := cmd0.CombinedOutput()
 		if err0 != nil {
 			println("System update error!")
@@ -145,11 +149,11 @@ func main() {
 }
 // check if config passed in from flag name
 func isFlagPassed(name string) bool {
-    found := false
-    flag.Visit(func(f *flag.Flag) {
-        if f.Name == name {
-            found = true
-        }
-    })
-    return found
+	found := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			found = true
+		}
+	})
+	return found
 }
