@@ -36,6 +36,8 @@ RUN \
 	# bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 \
 	# 	libxrender1 git mercurial subversion && \
 	apt-get clean && \
+	# Remove after 4.12.0 version releases
+	[ "${CONDA_VER}" != "4.12.0" ] || CONDA_VER="4.11.0" && \
 	wget --quiet $(echo "https://repo.anaconda.com/miniconda\
 		/Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-$(uname -m).sh" | \
 		tr -d "\n" | tr -d "\t") -O ~/miniconda.sh && \
@@ -56,6 +58,7 @@ RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	conda config --add channels conda-forge && \
 	conda config --set auto_update_conda False && \
+	[ "${PY_VER}" != "3.10" ] || conda install python=3.10 conda=4.12.0 && \
 	[ "${PY_VER}" != "3.6" ] || sed -i \
 		$(echo "s@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>)(?!\[=<>!\])\
 			(\S\+)$')@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>|=)\
