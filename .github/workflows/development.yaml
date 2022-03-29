@@ -127,11 +127,11 @@ jobs:
     strategy:
       matrix:
         include:
-          - distro: alpine
-            conda_ver: 4.12.0
-            py_ver: 3.10
-            platform: linux/amd64
-            package_manager: apk
+          # - distro: alpine
+          #   conda_ver: 4.12.0
+          #   py_ver: 3.10
+          #   platform: linux/amd64
+          #   package_manager: apk
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.9
@@ -152,11 +152,11 @@ jobs:
             py_ver: 3.6
             platform: linux/amd64
             package_manager: apk
-          - distro: debian
-            conda_ver: 4.12.0
-            py_ver: 3.10
-            platform: linux/amd64
-            package_manager: apt
+          # - distro: debian
+          #   conda_ver: 4.12.0
+          #   py_ver: 3.10
+          #   platform: linux/amd64
+          #   package_manager: apt
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.9
