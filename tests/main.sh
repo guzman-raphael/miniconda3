@@ -22,8 +22,8 @@ assert ()
 validate () {
 	SHELL_CMD_FLAGS_ORIG=$SHELL_CMD_FLAGS
 	# Verify proper versions
-	# Undo version downgrade in Dockerfile
-	[ "${CONDA_VER}" != "4.11.0" ] || CONDA_VER="4.12.0" && \
+	# Remove once miniconda 4.12.0 releases
+	[ "${CONDA_VER}" != "4.12.0" ] || CONDA_VER="4.11.0" && \
 	assert "conda version" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
 		conda -V | awk '{print \$2}'
 	END
