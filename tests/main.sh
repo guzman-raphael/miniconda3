@@ -22,14 +22,10 @@ assert ()
 validate () {
 	SHELL_CMD_FLAGS_ORIG=$SHELL_CMD_FLAGS
 	# Verify proper versions
-	# Bump down conda_ver for github actions to pass
-	[ "${CONDA_VER}" != "4.12.0" ] || CONDA_VER="4.11.0" && \
 	assert "conda version" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
 		conda -V | awk '{print \$2}'
 	END
 	) == ${CONDA_VER} ]" $LINENO
-	# Bump down python_ver for gitbuh actions to pass
-	[ "${PY_VER}" != "3.1" ] || PY_VER="3.9" && \
 	assert "python version" "grep -q .${PY_VER}. <<< .$($SHELL_CMD 'eval "$(cat)"' <<-END
 		python --version 2>&1 | awk '{print \$2}'
 	END
