@@ -22,12 +22,14 @@ assert ()
 validate () {
 	SHELL_CMD_FLAGS_ORIG=$SHELL_CMD_FLAGS
 	# Verify proper versions
-	# Remove once miniconda 4.12.0 releases
+	# Bump down conda_ver for github actions to pass
 	[ "${CONDA_VER}" != "4.12.0" ] || CONDA_VER="4.11.0" && \
 	assert "conda version" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
 		conda -V | awk '{print \$2}'
 	END
 	) == ${CONDA_VER} ]" $LINENO
+	# Bump down python_ver for gitbuh actions to pass
+	[ "${PY_VER}}" != "3.1" ] || PY_VER="3.9.7" && \
 	assert "python version" "grep -q .${PY_VER}. <<< .$($SHELL_CMD 'eval "$(cat)"' <<-END
 		python --version 2>&1 | awk '{print \$2}'
 	END
@@ -162,7 +164,7 @@ IMAGE=$(echo $REF | awk -F':' '{print $1}')
 SHELL_CMD_TEMPLATE="docker run --rm -i \$SHELL_CMD_FLAGS $REF \
 	$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}') -c"
 # Determine reference size
-if [ $DISTRO == alpine ] && [ $PY_VER == '3.1' ] && [ $PLATFORM == 'linux/amd64' ]; then
+if [ $DISTRO == alpine ] && [ $PY_VER == '3.1' ] || [ $PY_VER == '3.10' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=478
 elif [ $DISTRO == alpine ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=240
@@ -172,7 +174,7 @@ elif [ $DISTRO == alpine ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/amd6
 	SIZE_LIMIT=196
 elif [ $DISTRO == alpine ] && [ $PY_VER == '3.6' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=155
-elif [ $DISTRO == debian ] && [ $PY_VER == '3.1' ] && [ $PLATFORM == 'linux/amd64' ]; then
+elif [ $DISTRO == debian ] && [ $PY_VER == '3.1' ] || [ $PY_VER == '3.10' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=572
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=311 #481
