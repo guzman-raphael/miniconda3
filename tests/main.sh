@@ -98,6 +98,8 @@ validate () {
 	TEST_MODULE=beautifulsoup4
 	TEST_MODULE_IMPORT=bs4
 
+	# Python 3.10 version hack
+	[ "${PY_VER}" != "3.1" ] || "PY_VER" != "3.10" && \
 	assert "pip install" "grep -q /opt/conda/lib/python${PY_VER}/site-packages/ <<< \
 		$($SHELL_CMD 'eval "$(cat)"' <<-END | tail -1
 			pip install --force-reinstall $TEST_MODULE && \
