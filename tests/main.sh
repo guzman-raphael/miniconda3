@@ -29,7 +29,7 @@ validate () {
 	END
 	) == ${CONDA_VER} ]" $LINENO
 	# Bump down python_ver for gitbuh actions to pass
-	[ "${PY_VER}" != "3.1" ] || PY_VER="3.9.7" && \
+	[ "${PY_VER}" != "3.1" ] || PY_VER="3.9" && \
 	assert "python version" "grep -q .${PY_VER}. <<< .$($SHELL_CMD 'eval "$(cat)"' <<-END
 		python --version 2>&1 | awk '{print \$2}'
 	END
