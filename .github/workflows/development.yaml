@@ -14,53 +14,53 @@ jobs:
             platform: linux/amd64
             py_label: py39_
             conda_md5: 4e2f31e0b2598634c80daa12e4981647
-          - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.9
-            platform: linux/amd64
-            py_label: py39_
-            conda_md5: 8c69f65a4ae27fb41df0fe552b4a8a3b
-          - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.8
-            platform: linux/amd64
-            py_label: py38_
-            conda_md5: 14da4a9a44b337f7ccb8363537f65b9c
-          - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.7
-            platform: linux/amd64
-            py_label: py37_
-            conda_md5: 9f186c1d86c266acc47dbc1603f0e2ed
-          - distro: alpine
-            conda_ver: 4.5.4
-            py_ver: 3.6
-            platform: linux/amd64
-            conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
+          # - distro: alpine
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.9
+          #   platform: linux/amd64
+          #   py_label: py39_
+          #   conda_md5: 8c69f65a4ae27fb41df0fe552b4a8a3b
+          # - distro: alpine
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.8
+          #   platform: linux/amd64
+          #   py_label: py38_
+          #   conda_md5: 14da4a9a44b337f7ccb8363537f65b9c
+          # - distro: alpine
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.7
+          #   platform: linux/amd64
+          #   py_label: py37_
+          #   conda_md5: 9f186c1d86c266acc47dbc1603f0e2ed
+          # - distro: alpine
+          #   conda_ver: 4.5.4
+          #   py_ver: 3.6
+          #   platform: linux/amd64
+          #   conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
           - distro: debian
             conda_ver: 4.12.0
             py_ver: 3.10
             platform: linux/amd64
             py_label: py39_
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.9
-            platform: linux/amd64
-            py_label: py39_
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.8
-            platform: linux/amd64
-            py_label: py38_
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.7
-            platform: linux/amd64
-            py_label: py37_
-          - distro: debian
-            conda_ver: 4.5.4
-            py_ver: 3.6
-            platform: linux/amd64
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.9
+          #   platform: linux/amd64
+          #   py_label: py39_
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.8
+          #   platform: linux/amd64
+          #   py_label: py38_
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.7
+          #   platform: linux/amd64
+          #   py_label: py37_
+          # - distro: debian
+          #   conda_ver: 4.5.4
+          #   py_ver: 3.6
+          #   platform: linux/amd64
           # - distro: debian
           #   conda_ver: 4.10.3
           #   py_ver: 3.9
@@ -132,51 +132,51 @@ jobs:
             py_ver: 3.10
             platform: linux/amd64
             package_manager: apk
-          - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.9
-            platform: linux/amd64
-            package_manager: apk
-          - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.8
-            platform: linux/amd64
-            package_manager: apk
-          - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.7
-            platform: linux/amd64
-            package_manager: apk
-          - distro: alpine
-            conda_ver: 4.5.4
-            py_ver: 3.6
-            platform: linux/amd64
-            package_manager: apk
+          # - distro: alpine
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.9
+          #   platform: linux/amd64
+          #   package_manager: apk
+          # - distro: alpine
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.8
+          #   platform: linux/amd64
+          #   package_manager: apk
+          # - distro: alpine
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.7
+          #   platform: linux/amd64
+          #   package_manager: apk
+          # - distro: alpine
+          #   conda_ver: 4.5.4
+          #   py_ver: 3.6
+          #   platform: linux/amd64
+          #   package_manager: apk
           - distro: debian
             conda_ver: 4.12.0
             py_ver: 3.10
             platform: linux/amd64
             package_manager: apt
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.9
-            platform: linux/amd64
-            package_manager: apt
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.8
-            platform: linux/amd64
-            package_manager: apt
-          - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.7
-            platform: linux/amd64
-            package_manager: apt
-          - distro: debian
-            conda_ver: 4.5.4
-            py_ver: 3.6
-            platform: linux/amd64
-            package_manager: apt
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.9
+          #   platform: linux/amd64
+          #   package_manager: apt
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.8
+          #   platform: linux/amd64
+          #   package_manager: apt
+          # - distro: debian
+          #   conda_ver: 4.10.3
+          #   py_ver: 3.7
+          #   platform: linux/amd64
+          #   package_manager: apt
+          # - distro: debian
+          #   conda_ver: 4.5.4
+          #   py_ver: 3.6
+          #   platform: linux/amd64
+          #   package_manager: apt
           # - distro: debian
           #   conda_ver: 4.10.3
           #   py_ver: 3.9
