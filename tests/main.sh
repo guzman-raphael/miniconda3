@@ -159,8 +159,6 @@ TAG=$(echo $REF | awk -F':' '{print $2}')
 IMAGE=$(echo $REF | awk -F':' '{print $1}')
 SHELL_CMD_TEMPLATE="docker run --rm -i \$SHELL_CMD_FLAGS $REF \
 	$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}') -c"
-# Python 3.10 version hack
-[ "${PY_VER}" != "3.1" ] || PY_VER="3.10" && \
 # Determine reference size
 if [ $DISTRO == alpine ] && [ $PY_VER == '3.10' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=478

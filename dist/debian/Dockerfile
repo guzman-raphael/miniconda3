@@ -58,8 +58,6 @@ RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	conda config --add channels conda-forge && \
 	conda config --set auto_update_conda False && \
-	# Python 3.10 version hack
-	[ "${PY_VER}" != "3.1" ] || PY_VER="3.10" && \
 	[ "${PY_VER}" != "3.10" ] || conda install python=3.10 conda=4.12.0 && \
 	[ "${PY_VER}" != "3.6" ] || sed -i \
 		$(echo "s@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>)(?!\[=<>!\])\
