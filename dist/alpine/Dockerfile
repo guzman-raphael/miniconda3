@@ -82,6 +82,8 @@ RUN \
 	apk add /tmp/glibc-i18n-2.25-r0.apk && \
 	rm /tmp/glibc-i18n-2.25-r0.apk && \
 	/usr/glibc-compat/bin/localedef -i en_US -c -f UTF-8 en_US.UTF-8 && \
+	# Remove after 4.12.0 version releases
+	[ "${CONDA_VER}" != "4.12.0" ] || CONDA_VER="4.11.0" && \
 	# Current latest Miniconda3 release
 	wget --quiet $(echo "https://repo.anaconda.com/miniconda\
 		/Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-x86_64.sh" | \
@@ -111,6 +113,7 @@ RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	conda config --add channels conda-forge && \
 	conda config --set auto_update_conda False && \
+	[ "${PY_VER}" != "3.10" ] || conda install python=${PY_VER} conda=${CONDA_VER} && \
 	[ "${PY_VER}" != "3.6" ] || sed -i \
 		$(echo "s@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>)(?!\[=<>!\])\
 			(\S\+)$')@version_relation_re = re.compile(r'(==|!=|<=|>=|<|>|=)\
