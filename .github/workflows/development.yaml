@@ -8,12 +8,12 @@ jobs:
     strategy:
       matrix:
         include:
-          # - distro: alpine
-          #   conda_ver: 4.12.0
-          #   py_ver: 3.10
-          #   platform: linux/amd64
-          #   py_label: py39_
-          #   conda_md5: 4e2f31e0b2598634c80daa12e4981647
+          - distro: alpine
+            conda_ver: 4.12.0
+            py_ver: 3.10
+            platform: linux/amd64
+            py_label: py39_
+            conda_md5: 4e2f31e0b2598634c80daa12e4981647
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.9
@@ -37,11 +37,11 @@ jobs:
             py_ver: 3.6
             platform: linux/amd64
             conda_md5: a946ea1d0c4a642ddf0c3a26a18bb16d
-          # - distro: debian
-          #   conda_ver: 4.12.0
-          #   py_ver: 3.10
-          #   platform: linux/amd64
-          #   py_label: py39_
+          - distro: debian
+            conda_ver: 4.12.0
+            py_ver: 3.10
+            platform: linux/amd64
+            py_label: py39_
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.9
@@ -127,11 +127,11 @@ jobs:
     strategy:
       matrix:
         include:
-          # - distro: alpine
-          #   conda_ver: 4.12.0
-          #   py_ver: 3.10
-          #   platform: linux/amd64
-          #   package_manager: apk
+          - distro: alpine
+            conda_ver: 4.12.0
+            py_ver: 3.10
+            platform: linux/amd64
+            package_manager: apk
           - distro: alpine
             conda_ver: 4.10.3
             py_ver: 3.9
@@ -152,11 +152,11 @@ jobs:
             py_ver: 3.6
             platform: linux/amd64
             package_manager: apk
-          # - distro: debian
-          #   conda_ver: 4.12.0
-          #   py_ver: 3.10
-          #   platform: linux/amd64
-          #   package_manager: apt
+          - distro: debian
+            conda_ver: 4.12.0
+            py_ver: 3.10
+            platform: linux/amd64
+            package_manager: apt
           - distro: debian
             conda_ver: 4.10.3
             py_ver: 3.9
