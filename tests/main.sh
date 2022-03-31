@@ -35,17 +35,10 @@ validate () {
 	assert "username" "[ $($SHELL_CMD "id -u -n") == anaconda ]" $LINENO
 	assert "default group" "[ $($SHELL_CMD "id -g -n") == anaconda ]" $LINENO
 	assert "home" "[ $($SHELL_CMD "cd ~ && pwd") == '/home/anaconda' ]" $LINENO
-	if [ $PY_VER == '3.6' ]; then
-		assert "conda channel priority config" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
-			conda config --show channel_priority | awk -F': ' '{print \$2}'
-		END
-		) == True ]" $LINENO
-	else
-		assert "conda channel priority config" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
-			conda config --show channel_priority | awk -F': ' '{print \$2}'
-		END
-		) == flexible ]" $LINENO
-	fi
+	assert "conda channel priority config" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
+		conda config --show channel_priority | awk -F': ' '{print \$2}'
+	END
+	) == flexible ]" $LINENO
 	assert "conda default channel" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
 		conda config --show channels | head -2 | tail -1 | awk -F'- ' '{print \$2}'
 	END
@@ -168,8 +161,6 @@ elif [ $DISTRO == alpine ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/amd6
 	SIZE_LIMIT=188
 elif [ $DISTRO == alpine ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=196
-elif [ $DISTRO == alpine ] && [ $PY_VER == '3.6' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=155
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.10' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=572
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/amd64' ]; then
@@ -178,8 +169,6 @@ elif [ $DISTRO == debian ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/amd6
 	SIZE_LIMIT=265 #428
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/amd64' ]; then
 	SIZE_LIMIT=269 #437
-elif [ $DISTRO == debian ] && [ $PY_VER == '3.6' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=228 #396
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/arm64' ]; then
 	SIZE_LIMIT=505
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/arm64' ]; then
