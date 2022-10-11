@@ -13,9 +13,11 @@ assert ()
 	if ! eval "$2"; then
 		echo "Assertion ($1) failed:  \"$2\""
 		echo "File \"$0\", line $lineno"
+		echo "---------------- TEST[$SHELL_CMD_FLAGS]: $1 ❌ ----------------" | \
+			tr -d '\t'
 		exit $E_ASSERT_FAILED
 	else
-		echo "---------------- TEST[$SHELL_CMD_FLAGS]: $1 ✔️ ----------------" | \
+		echo "---------------- TEST[$SHELL_CMD_FLAGS]: $1 ✅ ----------------" | \
 			tr -d '\t'
 	fi
 }
@@ -35,6 +37,8 @@ validate () {
 	assert "username" "[ $($SHELL_CMD "id -u -n") == anaconda ]" $LINENO
 	assert "default group" "[ $($SHELL_CMD "id -g -n") == anaconda ]" $LINENO
 	assert "home" "[ $($SHELL_CMD "cd ~ && pwd") == '/home/anaconda' ]" $LINENO
+	assert "create in main" "[ $($SHELL_CMD \
+		"touch /main/something && echo works") == works ]" $LINENO
 	assert "conda channel priority config" "[ $($SHELL_CMD 'eval "$(cat)"' <<-END
 		conda config --show channel_priority | awk -F': ' '{print \$2}'
 	END
