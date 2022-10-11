@@ -66,6 +66,7 @@ RUN \
 	export uid=3000 gid=$(awk -F':' '/^anaconda/{print $3}' /etc/group) && \
 	mkdir -p /home/anaconda && \
 	mkdir /main && \
+	chmod g+w /main && \
 	echo "anaconda:x:${uid}:${gid}:Developer,,,:/home/anaconda:/bin/sh" >> /etc/passwd && \
 	# echo "anaconda:x:${uid}:" >> /etc/group && \
 	chown ${uid}:${gid} -R /home/anaconda && \
