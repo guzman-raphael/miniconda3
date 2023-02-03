@@ -99,7 +99,7 @@ jobs:
       DOCKER_CLIENT_TIMEOUT: "120"
       COMPOSE_HTTP_TIMEOUT: "120"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Determine platform tag
         run: |
           PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
@@ -125,7 +125,7 @@ jobs:
           docker save "${REF}" | \
               gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}-${PLATFORM_TAG}.tar.gz"
       - name: Add image artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: >
             ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
@@ -212,13 +212,13 @@ jobs:
       PLATFORM: ${{matrix.platform}}
       PACKAGE_MANAGER: ${{matrix.package_manager}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Determine platform tag
         run: |
           PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
           echo "PLATFORM_TAG=${PLATFORM_TAG}" >> $GITHUB_ENV
       - name: Fetch image artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: >
             ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
@@ -304,13 +304,13 @@ jobs:
       DOCKER_USERNAME: ${{secrets.docker_username}}
       DOCKER_PASSWORD: ${{secrets.docker_password}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Determine platform tag
         run: |
           PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
           echo "PLATFORM_TAG=${PLATFORM_TAG}" >> $GITHUB_ENV
       - name: Fetch image artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: >
             ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
@@ -340,13 +340,13 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build docs
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "docs/"
       # - name: Upload docs artifact
-      #   uses: actions/upload-artifact@v1
+      #   uses: actions/upload-artifact@v3
       #   with:
       #     name: docs-html
       #     path: docs/_build/html/
