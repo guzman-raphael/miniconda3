@@ -157,30 +157,34 @@ IMAGE=$(echo $REF | awk -F':' '{print $1}')
 SHELL_CMD_TEMPLATE="docker run --rm -i \$SHELL_CMD_FLAGS $REF \
 	$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}') -c"
 # Determine reference size
-if [ $DISTRO == alpine ] && [ $PY_VER == '3.10' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=478
+if [ $DISTRO == alpine ] && [ $PY_VER == '3.11' ] && [ $PLATFORM == 'linux/amd64' ]; then
+	SIZE_LIMIT=469
+elif [ $DISTRO == alpine ] && [ $PY_VER == '3.10' ] && [ $PLATFORM == 'linux/amd64' ]; then
+	SIZE_LIMIT=270
 elif [ $DISTRO == alpine ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=240
+	SIZE_LIMIT=259
 elif [ $DISTRO == alpine ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=188
+	SIZE_LIMIT=254
 elif [ $DISTRO == alpine ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=196
+	SIZE_LIMIT=223
+elif [ $DISTRO == debian ] && [ $PY_VER == '3.11' ] && [ $PLATFORM == 'linux/amd64' ]; then
+	SIZE_LIMIT=560
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.10' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=572
+	SIZE_LIMIT=362
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=311 #481
+	SIZE_LIMIT=351
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=265 #428
+	SIZE_LIMIT=346
 elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/amd64' ]; then
-	SIZE_LIMIT=269 #437
-elif [ $DISTRO == debian ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/arm64' ]; then
-	SIZE_LIMIT=505
-elif [ $DISTRO == debian ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/arm64' ]; then
-	SIZE_LIMIT=450
-elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/arm64' ]; then
-	SIZE_LIMIT=460
+	SIZE_LIMIT=316
+# elif [ $DISTRO == debian ] && [ $PY_VER == '3.9' ] && [ $PLATFORM == 'linux/arm64' ]; then
+# 	SIZE_LIMIT=505
+# elif [ $DISTRO == debian ] && [ $PY_VER == '3.8' ] && [ $PLATFORM == 'linux/arm64' ]; then
+# 	SIZE_LIMIT=450
+# elif [ $DISTRO == debian ] && [ $PY_VER == '3.7' ] && [ $PLATFORM == 'linux/arm64' ]; then
+# 	SIZE_LIMIT=460
 fi
-SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.17" | bc)
+SIZE_LIMIT=$(echo "scale=4; $SIZE_LIMIT * 1.05" | bc)
 # Verify size minimal
 SIZE=$(docker images --filter "reference=$REF" --format "{{.Size}}" | awk -F'MB' '{print $1}')
 assert "minimal footprint" "(( $(echo "$SIZE <= $SIZE_LIMIT" | bc -l) ))" $LINENO

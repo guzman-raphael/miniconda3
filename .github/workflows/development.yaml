@@ -9,47 +9,68 @@ jobs:
       matrix:
         include:
           - distro: alpine
-            conda_ver: 4.12.0
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
+            py_ver: '3.11'
+            platform: linux/amd64
+            py_label: py310_
+            conda_sha256: 00938c3534750a0e4069499baf8f4e6dc1c2e471c86a59caa0dd03f4a9269db6
+          - distro: alpine
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
             py_ver: '3.10'
             platform: linux/amd64
-            py_label: py39_
-            conda_md5: 4e2f31e0b2598634c80daa12e4981647
+            py_label: py310_
+            conda_sha256: 00938c3534750a0e4069499baf8f4e6dc1c2e471c86a59caa0dd03f4a9269db6
           - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.9
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
+            py_ver: '3.9'
             platform: linux/amd64
             py_label: py39_
-            conda_md5: 8c69f65a4ae27fb41df0fe552b4a8a3b
+            conda_sha256: e685005710679914a909bfb9c52183b3ccc56ad7bb84acc861d596fcbe5d28bb
           - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.8
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
+            py_ver: '3.8'
             platform: linux/amd64
             py_label: py38_
-            conda_md5: 14da4a9a44b337f7ccb8363537f65b9c
+            conda_sha256: 473e5ecc8e078e9ef89355fbca21f8eefa5f9081544befca99867c7beac3150d
           - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.7
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
+            py_ver: '3.7'
             platform: linux/amd64
             py_label: py37_
-            conda_md5: 9f186c1d86c266acc47dbc1603f0e2ed
+            conda_sha256: 22b14d52265b4e609c6ce78e2f2884b277d976b83b5f9c8a83423e3eba2ccfbe
           - distro: debian
-            conda_ver: 4.12.0
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
+            py_ver: '3.11'
+            platform: linux/amd64
+            py_label: py310_
+          - distro: debian
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
             py_ver: '3.10'
             platform: linux/amd64
-            py_label: py39_
+            py_label: py310_
           - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.9
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
+            py_ver: '3.9'
             platform: linux/amd64
             py_label: py39_
           - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.8
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
+            py_ver: '3.8'
             platform: linux/amd64
             py_label: py38_
           - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.7
+            conda_ver: '22.11.1'
+            conda_suffix: '-1'
+            py_ver: '3.7'
             platform: linux/amd64
             py_label: py37_
           # - distro: debian
@@ -70,14 +91,15 @@ jobs:
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
+      CONDA_SUFFIX: ${{matrix.conda_suffix}}
       PY_VER: ${{matrix.py_ver}}
       PLATFORM: ${{matrix.platform}}
       PY_LABEL: ${{matrix.py_label}}
-      CONDA_MD5: ${{matrix.conda_md5}}
+      CONDA_SHA256: ${{matrix.conda_sha256}}
       DOCKER_CLIENT_TIMEOUT: "120"
       COMPOSE_HTTP_TIMEOUT: "120"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Determine platform tag
         run: |
           PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
@@ -103,7 +125,7 @@ jobs:
           docker save "${REF}" | \
               gzip > "${CONDA_VER}-py${PY_VER}-${DISTRO}-${PLATFORM_TAG}.tar.gz"
       - name: Add image artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: >
             ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
@@ -119,43 +141,53 @@ jobs:
       matrix:
         include:
           - distro: alpine
-            conda_ver: 4.12.0
+            conda_ver: '22.11.1'
+            py_ver: '3.11'
+            platform: linux/amd64
+            package_manager: apk
+          - distro: alpine
+            conda_ver: '22.11.1'
             py_ver: '3.10'
             platform: linux/amd64
             package_manager: apk
           - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.9
+            conda_ver: '22.11.1'
+            py_ver: '3.9'
             platform: linux/amd64
             package_manager: apk
           - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.8
+            conda_ver: '22.11.1'
+            py_ver: '3.8'
             platform: linux/amd64
             package_manager: apk
           - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.7
+            conda_ver: '22.11.1'
+            py_ver: '3.7'
             platform: linux/amd64
             package_manager: apk
           - distro: debian
-            conda_ver: 4.12.0
+            conda_ver: '22.11.1'
+            py_ver: '3.11'
+            platform: linux/amd64
+            package_manager: apt
+          - distro: debian
+            conda_ver: '22.11.1'
             py_ver: '3.10'
             platform: linux/amd64
             package_manager: apt
           - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.9
+            conda_ver: '22.11.1'
+            py_ver: '3.9'
             platform: linux/amd64
             package_manager: apt
           - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.8
+            conda_ver: '22.11.1'
+            py_ver: '3.8'
             platform: linux/amd64
             package_manager: apt
           - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.7
+            conda_ver: '22.11.1'
+            py_ver: '3.7'
             platform: linux/amd64
             package_manager: apt
           # - distro: debian
@@ -180,13 +212,13 @@ jobs:
       PLATFORM: ${{matrix.platform}}
       PACKAGE_MANAGER: ${{matrix.package_manager}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Determine platform tag
         run: |
           PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
           echo "PLATFORM_TAG=${PLATFORM_TAG}" >> $GITHUB_ENV
       - name: Fetch image artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: >
             ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
@@ -213,36 +245,44 @@ jobs:
       matrix:
         include:
           - distro: alpine
-            conda_ver: 4.12.0
+            conda_ver: '22.11.1'
+            py_ver: '3.11'
+            platform: linux/amd64
+          - distro: alpine
+            conda_ver: '22.11.1'
             py_ver: '3.10'
             platform: linux/amd64
           - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.9
+            conda_ver: '22.11.1'
+            py_ver: '3.9'
             platform: linux/amd64
           - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.8
+            conda_ver: '22.11.1'
+            py_ver: '3.8'
             platform: linux/amd64
           - distro: alpine
-            conda_ver: 4.10.3
-            py_ver: 3.7
+            conda_ver: '22.11.1'
+            py_ver: '3.7'
             platform: linux/amd64
           - distro: debian
-            conda_ver: 4.12.0
+            conda_ver: '22.11.1'
+            py_ver: '3.11'
+            platform: linux/amd64
+          - distro: debian
+            conda_ver: '22.11.1'
             py_ver: '3.10'
             platform: linux/amd64
           - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.9
+            conda_ver: '22.11.1'
+            py_ver: '3.9'
             platform: linux/amd64
           - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.8
+            conda_ver: '22.11.1'
+            py_ver: '3.8'
             platform: linux/amd64
           - distro: debian
-            conda_ver: 4.10.3
-            py_ver: 3.7
+            conda_ver: '22.11.1'
+            py_ver: '3.7'
             platform: linux/amd64
           # - distro: debian
           #   conda_ver: 4.10.3
@@ -264,13 +304,13 @@ jobs:
       DOCKER_USERNAME: ${{secrets.docker_username}}
       DOCKER_PASSWORD: ${{secrets.docker_password}}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Determine platform tag
         run: |
           PLATFORM_TAG=$(echo "$PLATFORM" | tr '/' '_')
           echo "PLATFORM_TAG=${PLATFORM_TAG}" >> $GITHUB_ENV
       - name: Fetch image artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: >
             ${{format('{0}-py{1}-{2}-{3}', matrix.conda_ver, matrix.py_ver, matrix.distro,
@@ -300,13 +340,13 @@ jobs:
       )
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Build docs
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "docs/"
       # - name: Upload docs artifact
-      #   uses: actions/upload-artifact@v1
+      #   uses: actions/upload-artifact@v3
       #   with:
       #     name: docs-html
       #     path: docs/_build/html/
