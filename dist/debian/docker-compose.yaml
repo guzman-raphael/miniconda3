@@ -6,6 +6,7 @@ services:
       dockerfile: dist/debian/Dockerfile
       args:
         - CONDA_VER
+        - CONDA_SUFFIX
         - PY_LABEL
         - PY_VER
     image: datajoint/miniconda3:${CONDA_VER}-py${PY_VER}-debian

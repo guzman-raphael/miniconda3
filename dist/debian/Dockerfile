@@ -1,3 +1,6 @@
+# This could be a better upgrade:
+# https://github.com/ContinuumIO/docker-images/blob/master/miniconda3/debian/Dockerfile
+
 #Temp Image to create exec to allow UID/GID to be updated on boot
 FROM golang:alpine as go_tmp
 COPY ./utilities/startup.go /startup.go
@@ -11,6 +14,7 @@ LABEL maintainerName="Raphael Guzman" \
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
 
 ARG CONDA_VER
+ARG CONDA_SUFFIX
 ARG PY_LABEL
 ARG PY_VER
 # Create anaconda group user, install dependencies, install Conda
@@ -37,14 +41,12 @@ RUN \
 	# bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 \
 	# 	libxrender1 git mercurial subversion && \
 	apt-get clean && \
-	# Remove after 4.12.0 version releases
-	[ "${CONDA_VER}" != "4.12.0" ] || CONDA_VER="4.11.0" && \
 	wget --quiet $(echo "https://repo.anaconda.com/miniconda\
-		/Miniconda3-${PY_LABEL}${CONDA_VER}-Linux-$(uname -m).sh" | \
+		/Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-$(uname -m).sh" | \
 		tr -d "\n" | tr -d "\t") -O ~/miniconda.sh && \
 	/bin/bash ~/miniconda.sh -b -p /opt/conda && \
 	rm ~/miniconda.sh && \
-	/opt/conda/bin/conda clean -tipsy && \
+	/opt/conda/bin/conda clean -tipy && \
 	ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
 	find /opt/conda/ -follow -type f -name '*.a' -delete && \
 	find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
@@ -59,7 +61,7 @@ RUN \
 	umask u+rwx,g+rwx,o-rwx && \
 	conda config --add channels conda-forge && \
 	conda config --set auto_update_conda False && \
-	[ "${PY_VER}" != "3.10" ] || conda install python=${PY_VER} conda=${CONDA_VER} && \
+	[ "${PY_VER}" != "3.11" ] || conda install python=${PY_VER} conda=${CONDA_VER} && \
 	# allow gui for gnome apps
 	# conda install -yc conda-forge gtk2 && \
 	find /opt/conda/conda-meta -user anaconda -exec chmod u+rwx,g+rwx,o-rwx "{}" \; && \

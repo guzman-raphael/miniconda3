@@ -6,7 +6,8 @@ services:
       dockerfile: dist/alpine/Dockerfile
       args:
         - CONDA_VER
-        - CONDA_MD5
+        - CONDA_SUFFIX
+        - CONDA_SHA256
         - PY_LABEL
         - PY_VER
     image: datajoint/miniconda3:${CONDA_VER}-py${PY_VER}-alpine
