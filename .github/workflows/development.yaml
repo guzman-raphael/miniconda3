@@ -120,47 +120,56 @@ jobs:
       matrix:
         include:
           - distro: alpine
+            last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
             py_ver: '3.11'
             platform: linux/amd64
             package_manager: apk
           - distro: alpine
+            last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
             py_ver: '3.10'
             platform: linux/amd64
             package_manager: apk
           - distro: alpine
+            last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
             py_ver: '3.9'
             platform: linux/amd64
             package_manager: apk
           - distro: alpine
+            last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
             py_ver: '3.8'
             platform: linux/amd64
             package_manager: apk
           - distro: debian
+            last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
             py_ver: '3.11'
             platform: linux/amd64
             package_manager: apt
           - distro: debian
+            last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
             py_ver: '3.10'
             platform: linux/amd64
             package_manager: apt
           - distro: debian
+            last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
             py_ver: '3.9'
             platform: linux/amd64
             package_manager: apt
           - distro: debian
+            last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
             py_ver: '3.8'
             platform: linux/amd64
             package_manager: apt
     env:
       DISTRO: ${{matrix.distro}}
+      LAST_BUILD_CONDA_VER: ${{matrix.last_build_conda_ver}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
       PLATFORM: ${{matrix.platform}}
