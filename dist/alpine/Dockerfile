@@ -120,6 +120,7 @@ RUN \
 	find /opt/conda/conda-meta -user anaconda -exec chmod u+rwx,g+rwx,o-rwx "{}" \; && \
 	conda clean -ya
 
+ENV HOME /home/anaconda
 ENV APK_REQUIREMENTS /tmp/apk_requirements.txt
 ENV PIP_REQUIREMENTS /tmp/pip_requirements.txt
 ENV CONDA_REQUIREMENTS /tmp/conda_requirements.txt
@@ -130,26 +131,6 @@ RUN \
 	chmod +x /entrypoint.sh && \
 	chmod 4755 /startup
 USER anaconda:anaconda
-ENTRYPOINT ["/entrypoint.sh"]
-WORKDIR /main
-VOLUME /tmp/.X11-unix
-CMD ["sh"]
-
-# Squashed Final Image
-FROM scratch
-COPY --from=miniconda-build / /
-LABEL maintainerName="Raphael Guzman" \
-	maintainerEmail="raphael@datajoint.com" \
-	maintainerCompany="DataJoint"
-USER anaconda:anaconda
-# Add conda to path here for use in downstream dockerfiles
-ENV PATH /opt/conda/bin:$PATH
-ENV ENV "/home/anaconda/.ashrc"
-ENV HOME /home/anaconda
-ENV LANG C.UTF-8
-ENV APK_REQUIREMENTS /tmp/apk_requirements.txt
-ENV PIP_REQUIREMENTS /tmp/pip_requirements.txt
-ENV CONDA_REQUIREMENTS /tmp/conda_requirements.txt
 ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /main
 VOLUME /tmp/.X11-unix

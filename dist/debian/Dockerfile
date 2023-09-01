@@ -6,17 +6,19 @@ FROM golang:alpine as go_tmp
 COPY ./utilities/startup.go /startup.go
 RUN cd / && go build startup.go
 
-FROM debian:11-slim as miniconda-build
+FROM debian:12-slim as miniconda-build
 LABEL maintainerName="Raphael Guzman" \
 	maintainerEmail="raphael@datajoint.com" \
 	maintainerCompany="DataJoint"
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
 
 ARG CONDA_VER
 ARG CONDA_SUFFIX
 ARG PY_LABEL
 ARG PY_VER
+ARG CONDA_SHA256
 # Create anaconda group user, install dependencies, install Conda
 RUN \
 	groupadd -r anaconda && \
@@ -42,8 +44,12 @@ RUN \
 	# 	libxrender1 git mercurial subversion && \
 	apt-get clean && \
 	wget --quiet $(echo "https://repo.anaconda.com/miniconda\
-		/Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-$(uname -m).sh" | \
-		tr -d "\n" | tr -d "\t") -O ~/miniconda.sh && \
+		/Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh" | \
+		tr -d "\n" | tr -d "\t") && \
+	echo "${CONDA_SHA256}  Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh" \
+		> miniconda.sha256 && \
+	if [ $(sha256sum -c miniconda.sha256 | awk '{print $2}') != "OK" ] ; then exit 1; fi && \
+	mv Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh ~/miniconda.sh && \
 	/bin/bash ~/miniconda.sh -b -p /opt/conda && \
 	rm ~/miniconda.sh && \
 	/opt/conda/bin/conda clean -tipy && \
@@ -67,6 +73,7 @@ RUN \
 	find /opt/conda/conda-meta -user anaconda -exec chmod u+rwx,g+rwx,o-rwx "{}" \; && \
 	conda clean -ya
 
+ENV HOME /home/anaconda
 ENV APT_REQUIREMENTS /tmp/apt_requirements.txt
 ENV PIP_REQUIREMENTS /tmp/pip_requirements.txt
 ENV CONDA_REQUIREMENTS /tmp/conda_requirements.txt
@@ -77,25 +84,6 @@ RUN \
 	chmod +x /entrypoint.sh && \
 	chmod 4755 /startup
 USER anaconda:anaconda
-ENTRYPOINT ["/entrypoint.sh"]
-WORKDIR /main
-VOLUME /tmp/.X11-unix
-CMD ["bash"]
-
-# Squashed Final Image
-FROM scratch
-COPY --from=miniconda-build / /
-LABEL maintainerName="Raphael Guzman" \
-	maintainerEmail="raphael@datajoint.com" \
-	maintainerCompany="DataJoint"
-USER anaconda:anaconda
-# Add conda to path here for use in downstream dockerfiles
-ENV PATH /opt/conda/bin:$PATH
-ENV HOME /home/anaconda
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
-ENV APT_REQUIREMENTS /tmp/apt_requirements.txt
-ENV PIP_REQUIREMENTS /tmp/pip_requirements.txt
-ENV CONDA_REQUIREMENTS /tmp/conda_requirements.txt
 ENTRYPOINT ["/entrypoint.sh"]
 WORKDIR /main
 VOLUME /tmp/.X11-unix
