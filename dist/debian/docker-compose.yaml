@@ -7,6 +7,7 @@ services:
       args:
         - CONDA_VER
         - CONDA_SUFFIX
+        - CONDA_SHA256
         - PY_LABEL
         - PY_VER
     image: datajoint/miniconda3:${CONDA_VER}-py${PY_VER}-debian

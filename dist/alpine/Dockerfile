@@ -120,6 +120,7 @@ RUN \
 	find /opt/conda/conda-meta -user anaconda -exec chmod u+rwx,g+rwx,o-rwx "{}" \; && \
 	conda clean -ya
 
+ENV HOME /home/anaconda
 ENV APK_REQUIREMENTS /tmp/apk_requirements.txt
 ENV PIP_REQUIREMENTS /tmp/pip_requirements.txt
 ENV CONDA_REQUIREMENTS /tmp/conda_requirements.txt

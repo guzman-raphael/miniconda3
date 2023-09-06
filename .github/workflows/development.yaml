@@ -1,7 +1,10 @@
 name: Development
 on:
   push:
-  pull_request:
+    tags:
+      - '*.*.*'
+  # pull_request:
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,85 +12,61 @@ jobs:
       matrix:
         include:
           - distro: alpine
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
             py_ver: '3.11'
             platform: linux/amd64
             py_label: py310_
-            conda_sha256: 00938c3534750a0e4069499baf8f4e6dc1c2e471c86a59caa0dd03f4a9269db6
+            conda_sha256: 634d76df5e489c44ade4085552b97bebc786d49245ed1a830022b0b406de5817
           - distro: alpine
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
             py_ver: '3.10'
             platform: linux/amd64
             py_label: py310_
-            conda_sha256: 00938c3534750a0e4069499baf8f4e6dc1c2e471c86a59caa0dd03f4a9269db6
+            conda_sha256: ea5e6e8a3d5a0247b9df85382d27220fac8e59b5778fd313c5913879cd9baafc
           - distro: alpine
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
             py_ver: '3.9'
             platform: linux/amd64
             py_label: py39_
-            conda_sha256: e685005710679914a909bfb9c52183b3ccc56ad7bb84acc861d596fcbe5d28bb
+            conda_sha256: 9829d95f639bd0053b2ed06d1204e60644617bf37dd5cc57523732e0e8d64516
           - distro: alpine
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
             py_ver: '3.8'
             platform: linux/amd64
             py_label: py38_
-            conda_sha256: 473e5ecc8e078e9ef89355fbca21f8eefa5f9081544befca99867c7beac3150d
-          - distro: alpine
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
-            py_ver: '3.7'
-            platform: linux/amd64
-            py_label: py37_
-            conda_sha256: 22b14d52265b4e609c6ce78e2f2884b277d976b83b5f9c8a83423e3eba2ccfbe
+            conda_sha256: e2a4438671e0e42c5bba14cb51de6ce9763938184d6ca2967340bbe972bbe7e6
           - distro: debian
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
             py_ver: '3.11'
             platform: linux/amd64
             py_label: py310_
+            conda_sha256: 634d76df5e489c44ade4085552b97bebc786d49245ed1a830022b0b406de5817
           - distro: debian
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
             py_ver: '3.10'
             platform: linux/amd64
             py_label: py310_
+            conda_sha256: ea5e6e8a3d5a0247b9df85382d27220fac8e59b5778fd313c5913879cd9baafc
           - distro: debian
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
             py_ver: '3.9'
             platform: linux/amd64
             py_label: py39_
+            conda_sha256: 9829d95f639bd0053b2ed06d1204e60644617bf37dd5cc57523732e0e8d64516
           - distro: debian
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
             py_ver: '3.8'
             platform: linux/amd64
             py_label: py38_
-          - distro: debian
-            conda_ver: '22.11.1'
-            conda_suffix: '-1'
-            py_ver: '3.7'
-            platform: linux/amd64
-            py_label: py37_
-          # - distro: debian
-          #   conda_ver: 4.10.3
-          #   py_ver: 3.9
-          #   platform: linux/arm64
-          #   py_label: py39_
-          # - distro: debian
-          #   conda_ver: 4.10.3
-          #   py_ver: 3.8
-          #   platform: linux/arm64
-          #   py_label: py38_
-          # - distro: debian
-          #   conda_ver: 4.10.3
-          #   py_ver: 3.7
-          #   platform: linux/arm64
-          #   py_label: py37_
+            conda_sha256: e2a4438671e0e42c5bba14cb51de6ce9763938184d6ca2967340bbe972bbe7e6
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
@@ -141,72 +120,56 @@ jobs:
       matrix:
         include:
           - distro: alpine
-            conda_ver: '22.11.1'
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.11'
             platform: linux/amd64
             package_manager: apk
           - distro: alpine
-            conda_ver: '22.11.1'
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.10'
             platform: linux/amd64
             package_manager: apk
           - distro: alpine
-            conda_ver: '22.11.1'
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.9'
             platform: linux/amd64
             package_manager: apk
           - distro: alpine
-            conda_ver: '22.11.1'
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.8'
             platform: linux/amd64
             package_manager: apk
-          - distro: alpine
-            conda_ver: '22.11.1'
-            py_ver: '3.7'
-            platform: linux/amd64
-            package_manager: apk
           - distro: debian
-            conda_ver: '22.11.1'
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.11'
             platform: linux/amd64
             package_manager: apt
           - distro: debian
-            conda_ver: '22.11.1'
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.10'
             platform: linux/amd64
             package_manager: apt
           - distro: debian
-            conda_ver: '22.11.1'
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.9'
             platform: linux/amd64
             package_manager: apt
           - distro: debian
-            conda_ver: '22.11.1'
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.8'
             platform: linux/amd64
             package_manager: apt
-          - distro: debian
-            conda_ver: '22.11.1'
-            py_ver: '3.7'
-            platform: linux/amd64
-            package_manager: apt
-          # - distro: debian
-          #   conda_ver: 4.10.3
-          #   py_ver: 3.9
-          #   platform: linux/arm64
-          #   package_manager: apt
-          # - distro: debian
-          #   conda_ver: 4.10.3
-          #   py_ver: 3.8
-          #   platform: linux/arm64
-          #   package_manager: apt
-          # - distro: debian
-          #   conda_ver: 4.10.3
-          #   py_ver: 3.7
-          #   platform: linux/arm64
-          #   package_manager: apt
     env:
       DISTRO: ${{matrix.distro}}
+      LAST_BUILD_CONDA_VER: ${{matrix.last_build_conda_ver}}
       CONDA_VER: ${{matrix.conda_ver}}
       PY_VER: ${{matrix.py_ver}}
       PLATFORM: ${{matrix.platform}}
@@ -245,57 +208,37 @@ jobs:
       matrix:
         include:
           - distro: alpine
-            conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.11'
             platform: linux/amd64
           - distro: alpine
-            conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.10'
             platform: linux/amd64
           - distro: alpine
-            conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.9'
             platform: linux/amd64
           - distro: alpine
-            conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.8'
             platform: linux/amd64
-          - distro: alpine
-            conda_ver: '22.11.1'
-            py_ver: '3.7'
-            platform: linux/amd64
           - distro: debian
-            conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.11'
             platform: linux/amd64
           - distro: debian
-            conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.10'
             platform: linux/amd64
           - distro: debian
-            conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.9'
             platform: linux/amd64
           - distro: debian
-            conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.8'
             platform: linux/amd64
-          - distro: debian
-            conda_ver: '22.11.1'
-            py_ver: '3.7'
-            platform: linux/amd64
-          # - distro: debian
-          #   conda_ver: 4.10.3
-          #   py_ver: 3.9
-          #   platform: linux/arm64
-          # - distro: debian
-          #   conda_ver: 4.10.3
-          #   py_ver: 3.8
-          #   platform: linux/arm64
-          # - distro: debian
-          #   conda_ver: 4.10.3
-          #   py_ver: 3.7
-          #   platform: linux/arm64
     env:
       DISTRO: ${{matrix.distro}}
       CONDA_VER: ${{matrix.conda_ver}}
