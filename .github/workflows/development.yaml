@@ -16,14 +16,14 @@ jobs:
             conda_suffix: '-0'
             py_ver: '3.12'
             platform: linux/amd64
-            py_label: py312_
+            py_label: py310_
             conda_sha256: 634d76df5e489c44ade4085552b97bebc786d49245ed1a830022b0b406de5817
           - distro: alpine
             conda_ver: '23.5.2'
             conda_suffix: '-0'
             py_ver: '3.11'
             platform: linux/amd64
-            py_label: py311_
+            py_label: py310_
             conda_sha256: 634d76df5e489c44ade4085552b97bebc786d49245ed1a830022b0b406de5817
           - distro: alpine
             conda_ver: '23.5.2'
@@ -51,14 +51,14 @@ jobs:
             conda_suffix: '-0'
             py_ver: '3.12'
             platform: linux/amd64
-            py_label: py312_
+            py_label: py310_
             conda_sha256: 634d76df5e489c44ade4085552b97bebc786d49245ed1a830022b0b406de5817
           - distro: debian
             conda_ver: '23.5.2'
             conda_suffix: '-0'
             py_ver: '3.11'
             platform: linux/amd64
-            py_label: py311_
+            py_label: py310_
             conda_sha256: 634d76df5e489c44ade4085552b97bebc786d49245ed1a830022b0b406de5817
           - distro: debian
             conda_ver: '23.5.2'
