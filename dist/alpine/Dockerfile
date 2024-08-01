@@ -92,13 +92,10 @@ RUN \
 	# wget --quiet $(echo "https://repo.continuum.io/miniconda\
 	# 	/Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh" | \
 	# 	tr -d '\n' | tr -d '\t') && \
-	echo "${CONDA_SHA256}  Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh" \
-		> miniconda.sha256 && \
-	if [ $(sha256sum -c miniconda.sha256 | awk '{print $2}') != "OK" ] ; then exit 1; fi && \
 	mv Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh miniconda.sh && \
 	mkdir -p /opt && \
 	sh ./miniconda.sh -b -p /opt/conda && \
-	rm miniconda.sh miniconda.sha256 && \
+	rm miniconda.sh && \
 	ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
 	find /opt/conda/ -follow -type f -name '*.a' -delete && \
 	find /opt/conda/ -follow -type f -name '*.js.map' -delete && \

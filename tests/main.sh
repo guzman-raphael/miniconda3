@@ -157,8 +157,13 @@ IMAGE=$(echo $REF | awk -F':' '{print $1}')
 SHELL_CMD_TEMPLATE="docker run --rm -i \$SHELL_CMD_FLAGS $REF \
 	$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}') -c"
 # Get the compressed size of the last build from docker hub
+[[ -z $LAST_BUILD_CONDA_VER ]] && echo "ERROR: LAST_BUILD_CONDA_VER not set" && exit 1
+[[ -z $PY_VER ]] && echo "ERROR: PY_VER not set" && exit 1
+[[ -z $DISTRO ]] && echo "ERROR: DISTRO not set" && exit 1
+echo "Fetching LAST_BUILD_SIZE for image $IMAGE with LAST_BUILD_CONDA_VER=$LAST_BUILD_CONDA_VER, PY_VER=$PY_VER, DISTRO=$DISTRO"
 LAST_BUILD_SIZE=$(curl -s https://hub.docker.com/v2/repositories/$IMAGE/tags \
 	| jq -r '.results[] | select(.name=="'"$LAST_BUILD_CONDA_VER"'-py'"$PY_VER"'-'"$DISTRO"'") | .images[0].size')
+[[ -z $LAST_BUILD_SIZE ]] && echo "ERROR: could not fetch LAST_BUILD_SIZE" && exit 1
 SIZE_INCRESE_FACTOR=1.5
 SIZE_LIMIT=$(echo "scale=4; $LAST_BUILD_SIZE * $SIZE_INCRESE_FACTOR" | bc)
 # Verify size minimal

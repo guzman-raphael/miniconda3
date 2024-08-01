@@ -14,6 +14,13 @@ jobs:
           - distro: alpine
             conda_ver: '23.5.2'
             conda_suffix: '-0'
+            py_ver: '3.12'
+            platform: linux/amd64
+            py_label: py310_
+            conda_sha256: 634d76df5e489c44ade4085552b97bebc786d49245ed1a830022b0b406de5817
+          - distro: alpine
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
             py_ver: '3.11'
             platform: linux/amd64
             py_label: py310_
@@ -39,6 +46,13 @@ jobs:
             platform: linux/amd64
             py_label: py38_
             conda_sha256: e2a4438671e0e42c5bba14cb51de6ce9763938184d6ca2967340bbe972bbe7e6
+          - distro: debian
+            conda_ver: '23.5.2'
+            conda_suffix: '-0'
+            py_ver: '3.12'
+            platform: linux/amd64
+            py_label: py310_
+            conda_sha256: 634d76df5e489c44ade4085552b97bebc786d49245ed1a830022b0b406de5817
           - distro: debian
             conda_ver: '23.5.2'
             conda_suffix: '-0'
@@ -122,6 +136,12 @@ jobs:
           - distro: alpine
             last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
+            py_ver: '3.12'
+            platform: linux/amd64
+            package_manager: apk
+          - distro: alpine
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
             py_ver: '3.11'
             platform: linux/amd64
             package_manager: apk
@@ -143,6 +163,12 @@ jobs:
             py_ver: '3.8'
             platform: linux/amd64
             package_manager: apk
+          - distro: debian
+            last_build_conda_ver: '22.11.1'
+            conda_ver: '23.5.2'
+            py_ver: '3.12'
+            platform: linux/amd64
+            package_manager: apt
           - distro: debian
             last_build_conda_ver: '22.11.1'
             conda_ver: '23.5.2'
@@ -209,6 +235,10 @@ jobs:
         include:
           - distro: alpine
             conda_ver: '23.5.2'
+            py_ver: '3.12'
+            platform: linux/amd64
+          - distro: alpine
+            conda_ver: '23.5.2'
             py_ver: '3.11'
             platform: linux/amd64
           - distro: alpine
@@ -222,6 +252,10 @@ jobs:
           - distro: alpine
             conda_ver: '23.5.2'
             py_ver: '3.8'
+            platform: linux/amd64
+          - distro: debian
+            conda_ver: '23.5.2'
+            py_ver: '3.12'
             platform: linux/amd64
           - distro: debian
             conda_ver: '23.5.2'
@@ -269,7 +303,7 @@ jobs:
           docker push "${IMAGE}:${TAG}"
           docker tag "${IMAGE}:${TAG}" "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
           docker push "${IMAGE}:${TAG}-${GITHUB_SHA:0:7}"
-          [ "$PY_VER" == "3.11" ] && [ "$DISTRO" == "debian" ] \
+          [ "$PY_VER" == "3.12" ] && [ "$DISTRO" == "debian" ] \
                   && docker tag "${IMAGE}:${TAG}" "${IMAGE}:latest" \
                   && docker push "${IMAGE}:latest" \
               || echo "skipping 'latest' tag..."
