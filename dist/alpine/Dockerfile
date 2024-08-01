@@ -94,7 +94,7 @@ RUN \
 	# 	tr -d '\n' | tr -d '\t') && \
 	echo "${CONDA_SHA256}  Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh" \
 		> miniconda.sha256 && \
-	if [ $(sha256sum -c miniconda.sha256 | awk '{print $2}') != "OK" ] ; then exit 1; fi && \
+	if [ $(sha256sum -c miniconda.sha256 | awk '{print $2}') != "OK" ] ; then exit 1; else echo 'Failed SHA256 comparison:' && sha256sum "Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh" ; fi && \
 	mv Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh miniconda.sh && \
 	mkdir -p /opt && \
 	sh ./miniconda.sh -b -p /opt/conda && \
