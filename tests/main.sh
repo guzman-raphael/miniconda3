@@ -158,7 +158,7 @@ SHELL_CMD_TEMPLATE="docker run --rm -i \$SHELL_CMD_FLAGS $REF \
 	$(docker inspect "$REF" --format '{{join .Config.Cmd " "}}') -c"
 # Get the compressed size of the last build from docker hub
 LAST_BUILD_SIZE=$(curl -s https://hub.docker.com/v2/repositories/$IMAGE/tags \
-	| jq -r '.results[] | select(.name=="'"$LAST_BUILD_CONDA_VER"'-py'"$PY_VER"'-'"$DISTRO"'") | .images[0].size')
+	| jq -r '.results[] | select(.name=="'"$CONDA_VER"'-py'"$PY_VER"'-'"$DISTRO"'") | .images[0].size')
 SIZE_INCRESE_FACTOR=1.5
 SIZE_LIMIT=$(echo "scale=4; $LAST_BUILD_SIZE * $SIZE_INCRESE_FACTOR" | bc)
 # Verify size minimal
