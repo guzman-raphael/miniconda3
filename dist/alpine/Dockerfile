@@ -95,7 +95,7 @@ RUN \
 	mv Miniconda3-${PY_LABEL}${CONDA_VER}${CONDA_SUFFIX}-Linux-x86_64.sh miniconda.sh && \
 	mkdir -p /opt && \
 	sh ./miniconda.sh -b -p /opt/conda && \
-	rm miniconda.sh miniconda.sha256 && \
+	rm miniconda.sh && \
 	ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
 	find /opt/conda/ -follow -type f -name '*.a' -delete && \
 	find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
